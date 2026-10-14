@@ -1,0 +1,22 @@
+{
+  "name": "antigravity-workspace-cockpit",
+  "version": "1.0.0",
+  "description": "Private Antigravity Workspace Cockpit & Autonomous Multi-Agent Control Plane",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "antigravity",
+    "autonomous-agents",
+    "cockpit",
+    "workspace-vault",
+    "agentic-engineering"
+  ],
+  "author": "Antigravity Multi-Agent Fleet",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

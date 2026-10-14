@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ANTIGRAVITY // PRIVATE WORKSPACE COCKPIT</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <!-- Three.js for 3D Laser & Orbital WebGL Canvas -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body class="theme-blue">
+  <!-- Fixed Three.js WebGL Atmosphere Canvas -->
+  <canvas id="webgl-canvas"></canvas>
+
+  <!-- Laser Ambient Beam Effect -->
+  <div class="laser-beam-container" aria-hidden="true">
+    <div class="laser-beam"></div>
+    <div class="laser-bloom"></div>
+  </div>
+
+  <!-- Background Noise & Vignette Overlays -->
+  <div class="vignette-overlay" aria-hidden="true"></div>
+
+  <!-- =========================================================================
+       PRIVATE VAULT SECURITY LOCK SCREEN OVERLAY
+       ========================================================================= -->
+  <div class="vault-lock-overlay" id="vault-lock-screen">
+    <div class="vault-modal glass-panel">
+      <div class="vault-icon-wrap">
+        <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+        </svg>
+      </div>
+      <div class="vault-badge text-mono">RESTRICTED WORKSPACE VAULT</div>
+      <h2 class="vault-title">Private Session Cockpit</h2>
+      <p class="vault-desc">Enter your session passphrase or authenticate to access the live workspace telemetry, online file explorer, and task logs.</p>
+      
+      <form id="vault-unlock-form" class="vault-form">
+        <div class="vault-input-group">
+          <input type="password" id="vault-passcode" placeholder="Default PIN: antigravity" value="antigravity" autocomplete="off">
+          <button type="submit" class="btn btn-primary" id="btn-vault-unlock">
+            <span>Unlock Vault</span>
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          </button>
+        </div>
+        <div class="vault-quick-unlock text-caption text-dim">
+          <span>Protected local workspace</span> &bull; <a href="#" id="quick-unlock-btn" class="text-accent">Auto-Authenticate</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Main Application Wrapper -->
+  <div class="app-layout">
+    
+    <!-- Floating Frosted Glass Header -->
+    <header class="header-nav glass-panel">
+      <div class="nav-brand">
+        <div class="brand-pulse"></div>
+        <span class="brand-title">ANTIGRAVITY<span class="brand-accent">//VAULT</span></span>
+        <span class="badge badge-accent text-mono">PRIVATE COCKPIT</span>
+      </div>
+
+      <!-- Tab Navigation -->
+      <nav class="nav-links">
+        <button class="nav-tab active" data-tab="tab-dashboard">Dashboard</button>
+        <button class="nav-tab" data-tab="tab-effort">Effort & Tasks (<span id="effort-count-badge">10</span>)</button>
+        <button class="nav-tab" data-tab="tab-webdev">Web Dev & Stacks</button>
+        <button class="nav-tab" data-tab="tab-files">Live File Explorer 📂</button>
+        <button class="nav-tab" data-tab="tab-skills">Skills (496)</button>
+        <button class="nav-tab" data-tab="tab-agents">Agents (71)</button>
+      </nav>
+
+      <div class="nav-actions">
+        <button id="sound-toggle" class="btn-icon glass-card" title="Toggle Sound Feedback">
+          <svg class="icon icon-speaker" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+            <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+          </svg>
+          <span class="sound-status-dot"></span>
+        </button>
+
+        <div class="theme-switcher">
+          <button class="theme-dot dot-blue active" data-theme="theme-blue" title="Cobalt Laser"></button>
+          <button class="theme-dot dot-emerald" data-theme="theme-emerald" title="Cyber Emerald"></button>
+          <button class="theme-dot dot-purple" data-theme="theme-purple" title="Quantum Violet"></button>
+        </div>
+
+        <button id="lock-vault-btn" class="btn-icon glass-card" title="Lock Vault Session">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Content Tab Containers -->
+    <main class="main-content">
+      
+      <!-- =========================================================================
+           TAB 1: MISSION CONTROL & LIVE DASHBOARD
+           ========================================================================= -->
+      <section id="tab-dashboard" class="tab-pane active">
+        <div class="hero-header">
+          <div class="pill-announcement glass-panel">
+            <span class="pulse-dot"></span>
+            <span class="text-mono">PRIVATE COCKPIT ONLINE</span>
+            <span class="pill-divider">/</span>
+            <span class="text-dim" id="live-uptime-badge">UPTIME: 1h 12m</span>
+            <span class="pill-divider">/</span>
+            <span class="text-accent" id="live-ram-badge">RAM: 42%</span>
+          </div>
+
+          <h1 class="hero-title">
+            Private Workspace &<br>
+            <span class="gradient-text">Autonomous Agent Cockpit</span>
+          </h1>
+
+          <p class="hero-subtitle">
+            A secured private control plane tracking every task, installed skill, active agent persona, 
+            and saved file directly on the machine.
+          </p>
+        </div>
+
+        <!-- Live Machine Telemetry -->
+        <div class="telemetry-bar glass-panel">
+          <div class="telemetry-item">
+            <span class="text-caption text-mono">HOST PLATFORM</span>
+            <span class="telemetry-val text-mono" id="telem-platform">Linux (x64)</span>
+          </div>
+          <div class="telemetry-item">
+            <span class="text-caption text-mono">NODE RUNTIME</span>
+            <span class="telemetry-val text-mono" id="telem-node">v20.19.2</span>
+          </div>
+          <div class="telemetry-item">
+            <span class="text-caption text-mono">MEMORY USAGE</span>
+            <span class="telemetry-val text-mono text-accent" id="telem-mem">Checking...</span>
+          </div>
+          <div class="telemetry-item">
+            <span class="text-caption text-mono">WORKSPACE SCOPE</span>
+            <span class="telemetry-val text-mono text-positive">/home/userland</span>
+          </div>
+          <div class="telemetry-item">
+            <span class="text-caption text-mono">SECURITY AGENT</span>
+            <span class="telemetry-val text-mono text-accent">AgentShield v1.6.0</span>
+          </div>
+        </div>
+
+        <!-- KPI Metrics Grid -->
+        <div class="metrics-grid">
+          <div class="metric-card glass-panel">
+            <div class="metric-header">
+              <span class="text-caption text-mono">TOTAL SKILLS</span>
+              <span class="metric-icon">⚡</span>
+            </div>
+            <div class="metric-value tabular" id="kpi-skills">496</div>
+            <div class="metric-trend text-positive">
+              <span class="trend-icon">↑</span> 482 Workspace + 14 System
+            </div>
+          </div>
+
+          <div class="metric-card glass-panel">
+            <div class="metric-header">
+              <span class="text-caption text-mono">AUTONOMOUS AGENTS</span>
+              <span class="metric-icon">🤖</span>
+            </div>
+            <div class="metric-value tabular" id="kpi-agents">71</div>
+            <div class="metric-trend text-accent">
+              <span>Ready in .agents/agents/</span>
+            </div>
+          </div>
+
+          <div class="metric-card glass-panel">
+            <div class="metric-header">
+              <span class="text-caption text-mono">WORKFLOW ROUTINES</span>
+              <span class="metric-icon">🔄</span>
+            </div>
+            <div class="metric-value tabular" id="kpi-workflows">97</div>
+            <div class="metric-trend text-dim">
+              <span>Automated Pipelines</span>
+            </div>
+          </div>
+
+          <div class="metric-card glass-panel">
+            <div class="metric-header">
+              <span class="text-caption text-mono">RULES & POLICIES</span>
+              <span class="metric-icon">🛡️</span>
+            </div>
+            <div class="metric-value tabular" id="kpi-rules">122</div>
+            <div class="metric-trend text-positive">
+              <span>ECC & AgentShield Active</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Action Hub -->
+        <div class="quick-hub-grid">
+          <div class="quick-hub-card glass-card" onclick="switchTab('tab-effort')">
+            <div class="hub-card-icon">⚡</div>
+            <div class="hub-card-content">
+              <h3 class="hub-title">Audit Task & Work Effort Log</h3>
+              <p class="hub-desc">Inspect all 10 major technical achievements, installations, and command runs executed in this session.</p>
+            </div>
+            <span class="hub-arrow">&rarr;</span>
+          </div>
+
+          <div class="quick-hub-card glass-card" onclick="switchTab('tab-files')">
+            <div class="hub-card-icon">📂</div>
+            <div class="hub-card-content">
+              <h3 class="hub-title">Browse Saved Files Online</h3>
+              <p class="hub-desc">Inspect source code, configs, artifacts, and transcripts directly in your browser with live syntax viewer.</p>
+            </div>
+            <span class="hub-arrow">&rarr;</span>
+          </div>
+
+          <div class="quick-hub-card glass-card" onclick="switchTab('tab-webdev')">
+            <div class="hub-card-icon">🌐</div>
+            <div class="hub-card-content">
+              <h3 class="hub-title">Web Development Knowledge</h3>
+              <p class="hub-desc">Review architectures, polyglot language stacks, GSAP/Three.js patterns, and TDD guardrails.</p>
+            </div>
+            <span class="hub-arrow">&rarr;</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- =========================================================================
+           TAB 2: EFFORT, TASKS & WORK AUDIT TIMELINE
+           ========================================================================= -->
+      <section id="tab-effort" class="tab-pane">
+        <div class="section-header">
+          <div class="badge badge-accent">FULL AUDIT TRAIL</div>
+          <h2 class="section-title">Session Work & Effort History</h2>
+          <p class="section-subtitle">Every task, infrastructure milestone, and code change executed in this pair-programming session.</p>
+        </div>
+
+        <div class="effort-timeline" id="effort-timeline-container">
+          <!-- Dynamically populated from /api/activity -->
+        </div>
+      </section>
+
+      <!-- =========================================================================
+           TAB 3: WEB DEV, LANGUAGES & FRAMEWORKS INTELLIGENCE
+           ========================================================================= -->
+      <section id="tab-webdev" class="tab-pane">
+        <div class="section-header">
+          <div class="badge badge-accent">FULL-STACK KNOWLEDGE HUB</div>
+          <h2 class="section-title">Web Development & Language Stacks</h2>
+          <p class="section-subtitle">Architectural standards, framework paradigms, and polyglot language skills loaded into Antigravity.</p>
+        </div>
+
+        <!-- Architectures Grid -->
+        <h3 class="subheading text-mono">CORE ARCHITECTURAL PATTERNS</h3>
+        <div class="arch-grid" id="arch-grid-container">
+          <!-- Dynamically populated from /api/knowledge -->
+        </div>
+
+        <!-- Polyglot Languages Grid -->
+        <h3 class="subheading text-mono" style="margin-top: 40px;">SUPPORTED LANGUAGES & RUNTIMES</h3>
+        <div class="lang-grid" id="lang-grid-container">
+          <!-- Dynamically populated from /api/knowledge -->
+        </div>
+
+        <!-- VFX & Styling Tools -->
+        <h3 class="subheading text-mono" style="margin-top: 40px;">CREATIVE VFX & DESIGN ENGINEERING</h3>
+        <div class="vfx-grid" id="vfx-grid-container">
+          <!-- Dynamically populated from /api/knowledge -->
+        </div>
+      </section>
+
+      <!-- =========================================================================
+           TAB 4: LIVE FILE EXPLORER & ONLINE CODE VIEWER
+           ========================================================================= -->
+      <section id="tab-files" class="tab-pane">
+        <div class="section-header">
+          <div class="badge badge-accent">WORKSPACE FILE VAULT</div>
+          <h2 class="section-title">Live File Explorer & Online Viewer</h2>
+          <p class="section-subtitle">Browse your actual workspace on disk, view saved files online, and inspect code directly in this dashboard.</p>
+        </div>
+
+        <div class="file-explorer-container glass-panel">
+          <!-- Breadcrumb & Path Bar -->
+          <div class="explorer-path-bar">
+            <span class="path-root text-mono">/home/userland/</span>
+            <span class="current-path-display text-mono text-accent" id="explorer-current-path">.</span>
+            <button class="btn btn-glass btn-sm" id="btn-up-dir" title="Go up one folder">
+              <span>&larr; Up Directory</span>
+            </button>
+            <button class="btn btn-glass btn-sm" id="btn-refresh-files" title="Refresh files">
+              <span>↻ Refresh</span>
+            </button>
+          </div>
+
+          <div class="explorer-main">
+            <!-- Directory Tree / List -->
+            <div class="explorer-list-pane">
+              <div class="explorer-list-header text-mono text-caption">
+                <span>NAME</span>
+                <span>SIZE</span>
+              </div>
+              <div class="explorer-items" id="explorer-items-list">
+                <!-- Dynamically loaded from /api/files -->
+                <div class="text-dim text-mono" style="padding: 20px;">Loading workspace items...</div>
+              </div>
+            </div>
+
+            <!-- Code Viewer Pane -->
+            <div class="explorer-viewer-pane">
+              <div class="viewer-header">
+                <div class="viewer-meta">
+                  <span class="viewer-filename text-mono" id="viewer-filename">Select a file to inspect</span>
+                  <span class="badge badge-dim text-mono" id="viewer-filesize">0 KB</span>
+                </div>
+                <div class="viewer-actions">
+                  <button class="btn btn-glass btn-sm" id="btn-copy-code">Copy Content</button>
+                </div>
+              </div>
+
+              <div class="viewer-code-wrap">
+                <pre class="code-pre"><code class="code-display text-mono" id="viewer-code-content">// Select any file on the left to inspect its live contents.
+// Supports HTML, CSS, JavaScript, JSON, Markdown, Python, YAML, Shell scripts, etc.</code></pre>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- =========================================================================
+           TAB 5: SKILL MATRIX
+           ========================================================================= -->
+      <section id="tab-skills" class="tab-pane">
+        <div class="section-header">
+          <div class="badge badge-accent">PROCEDURAL RUNBOOKS</div>
+          <h2 class="section-title">Antigravity Skill Matrix</h2>
+          <p class="section-subtitle">496 downloaded skills loaded into progressive context.</p>
+        </div>
+
+        <!-- Filter Bar -->
+        <div class="filter-bar glass-panel">
+          <div class="search-input-wrap">
+            <svg class="search-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input type="text" id="skill-search" placeholder="Search installed skills (e.g. threejs, gsap, postgres, tdd, react)...">
+          </div>
+
+          <div class="category-pills" id="category-pills">
+            <button class="cat-pill active" data-cat="all">All Skills (<span id="count-all">482</span>)</button>
+            <button class="cat-pill" data-cat="3D & Motion">3D & Motion</button>
+            <button class="cat-pill" data-cat="UI & Systems">UI & Systems</button>
+            <button class="cat-pill" data-cat="Autonomous Agents">Autonomous</button>
+            <button class="cat-pill" data-cat="Languages & Stacks">Languages</button>
+            <button class="cat-pill" data-cat="Security & Governance">Security</button>
+            <button class="cat-pill" data-cat="DevOps & Cloud">DevOps</button>
+            <button class="cat-pill" data-cat="Data & Databases">Databases</button>
+          </div>
+        </div>
+
+        <div class="skills-grid" id="skills-grid"></div>
+
+        <div class="skills-footer">
+          <span class="text-mono text-dim" id="showing-text">Showing 24 skills</span>
+          <button id="load-more-btn" class="btn btn-glass btn-sm">Load More Skills</button>
+        </div>
+      </section>
+
+      <!-- =========================================================================
+           TAB 6: AGENT FLEET
+           ========================================================================= -->
+      <section id="tab-agents" class="tab-pane">
+        <div class="section-header">
+          <div class="badge badge-accent">71 SPECIALIZED ROLES</div>
+          <h2 class="section-title">Autonomous Agent Fleet</h2>
+          <p class="section-subtitle">Dedicated personas for review, architecture, testing, and language compilation.</p>
+        </div>
+
+        <div class="agents-grid" id="agents-grid"></div>
+      </section>
+
+    </main>
+
+    <!-- Modal for Skill Inspection -->
+    <div class="modal-backdrop" id="skill-modal" aria-hidden="true">
+      <div class="modal-card glass-panel">
+        <div class="modal-header">
+          <div class="modal-badge-group">
+            <span class="badge badge-accent" id="modal-category">CATEGORY</span>
+            <span class="badge badge-dim text-mono">SKILL.md</span>
+          </div>
+          <button class="btn-icon modal-close" id="modal-close">&times;</button>
+        </div>
+        <div class="modal-body">
+          <h3 class="modal-title text-mono" id="modal-title">skill-name</h3>
+          <p class="modal-desc" id="modal-desc">Skill description</p>
+          
+          <div class="modal-meta-box glass-card">
+            <div class="meta-item">
+              <span class="meta-label text-mono">LOCATION</span>
+              <span class="meta-val text-mono" id="modal-path">.agents/skills/name/SKILL.md</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-label text-mono">STATUS</span>
+              <span class="meta-val text-positive">Active / On-Demand Mount</span>
+            </div>
+          </div>
+
+          <div class="modal-code-box">
+            <div class="code-box-header text-mono">INVOCATION PATTERN</div>
+            <pre><code id="modal-code">// Prompt Antigravity:
+"Apply the [skill-name] skill to implement..."</code></pre>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-glass" id="modal-close-btn">Close</button>
+          <button class="btn btn-primary" id="modal-copy-btn">Copy Invocation</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="app-footer glass-panel">
+      <div class="footer-left">
+        <div class="footer-brand text-mono">ANTIGRAVITY // PRIVATE WORKSPACE VAULT</div>
+        <p class="text-caption text-dim">Active workspace: /home/userland &bull; Monitored by AgentShield &bull; Protected local session</p>
+      </div>
+      <div class="footer-right">
+        <div class="telemetry-pill glass-card text-mono">
+          <span class="status-live-dot"></span>
+          <span id="footer-telem">496 SKILLS &bull; 71 AGENTS &bull; VAULT UNLOCKED</span>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
