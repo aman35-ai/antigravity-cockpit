@@ -116,15 +116,19 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // =========================================================================
-  // 3. Tab Switching Architecture
+  // 3. Tab Switching Architecture (Desktop Nav + Mobile Bottom Dock)
   // =========================================================================
   const navTabs = document.querySelectorAll('.nav-tab');
+  const mobileDockBtns = document.querySelectorAll('.mobile-dock-btn');
   const tabPanes = document.querySelectorAll('.tab-pane');
 
   window.switchTab = function(tabId) {
     playUiClick();
     navTabs.forEach(t => {
       t.classList.toggle('active', t.getAttribute('data-tab') === tabId);
+    });
+    mobileDockBtns.forEach(b => {
+      b.classList.toggle('active', b.getAttribute('data-tab') === tabId);
     });
     tabPanes.forEach(p => {
       p.classList.toggle('active', p.id === tabId);
@@ -133,11 +137,19 @@ document.addEventListener('DOMContentLoaded', () => {
     if (tabId === 'tab-files') {
       loadFileExplorer(currentExplorerDir);
     }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   navTabs.forEach(tab => {
     tab.addEventListener('click', () => {
       const target = tab.getAttribute('data-tab');
+      window.switchTab(target);
+    });
+  });
+
+  mobileDockBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = btn.getAttribute('data-tab');
       window.switchTab(target);
     });
   });
@@ -158,7 +170,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
 
     // Particle Swarm
     const particleCount = 650;
@@ -218,6 +230,14 @@ document.addEventListener('DOMContentLoaded', () => {
       mouseX = (e.clientX - window.innerWidth / 2) * 0.05;
       mouseY = (e.clientY - window.innerHeight / 2) * 0.05;
     });
+
+    // Touch support for mobile devices
+    window.addEventListener('touchmove', (e) => {
+      if (e.touches && e.touches[0]) {
+        mouseX = (e.touches[0].clientX - window.innerWidth / 2) * 0.06;
+        mouseY = (e.touches[0].clientY - window.innerHeight / 2) * 0.06;
+      }
+    }, { passive: true });
 
     let scrollY = 0;
     window.addEventListener('scroll', () => { scrollY = window.scrollY; });
@@ -465,6 +485,9 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function viewOnlineFile(filePath) {
+    if (window.innerWidth <= 768 && typeof showExplorerViewer === 'function') {
+      showExplorerViewer();
+    }
     viewerFilename.innerText = `Loading ${filePath}...`;
     viewerCodeContent.innerText = '// Fetching file content...';
 
@@ -520,6 +543,43 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Mobile File Explorer Toggle Views
+  const btnToggleList = document.getElementById('btn-toggle-explorer-list');
+  const btnToggleViewer = document.getElementById('btn-toggle-explorer-viewer');
+  const btnMobileBackFiles = document.getElementById('btn-mobile-back-files');
+  const explorerListPane = document.getElementById('explorer-list-pane');
+  const explorerViewerPane = document.getElementById('explorer-viewer-pane');
+
+  function showExplorerList() {
+    playUiClick();
+    if (explorerListPane) explorerListPane.style.display = 'flex';
+    if (explorerViewerPane) explorerViewerPane.style.display = window.innerWidth <= 768 ? 'none' : 'flex';
+    if (btnToggleList) btnToggleList.classList.add('active');
+    if (btnToggleViewer) btnToggleViewer.classList.remove('active');
+    if (btnMobileBackFiles) btnMobileBackFiles.style.display = 'none';
+  }
+
+  function showExplorerViewer() {
+    playUiClick();
+    if (explorerViewerPane) explorerViewerPane.style.display = 'flex';
+    if (explorerListPane) explorerListPane.style.display = window.innerWidth <= 768 ? 'none' : 'flex';
+    if (btnToggleViewer) btnToggleViewer.classList.add('active');
+    if (btnToggleList) btnToggleList.classList.remove('active');
+    if (btnMobileBackFiles && window.innerWidth <= 768) btnMobileBackFiles.style.display = 'inline-flex';
+  }
+
+  if (btnToggleList) btnToggleList.addEventListener('click', showExplorerList);
+  if (btnToggleViewer) btnToggleViewer.addEventListener('click', showExplorerViewer);
+  if (btnMobileBackFiles) btnMobileBackFiles.addEventListener('click', showExplorerList);
+
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 768) {
+      if (explorerListPane) explorerListPane.style.display = 'flex';
+      if (explorerViewerPane) explorerViewerPane.style.display = 'flex';
+      if (btnMobileBackFiles) btnMobileBackFiles.style.display = 'none';
+    }
+  });
+
   // Handle direct download button for GitHub Pages
   if (window.location.hostname.includes('github.io')) {
     document.querySelectorAll('a[download]').forEach(a => {
@@ -560,6 +620,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       renderSkillsGrid();
       renderAgentsGrid();
+      initCommandDeck();
     })
     .catch(() => {});
 
@@ -693,23 +754,410 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Agent Grid
+  // =========================================================================
+  // 10. Agent Grid (73 Personas with Search & Category Filters)
+  // =========================================================================
   const agentsGrid = document.getElementById('agents-grid');
+  const agentSearchInput = document.getElementById('agent-search');
+  const agentCatPills = document.querySelectorAll('#agent-cat-pills .cat-pill');
+  let currentAgentCategory = 'all';
+  let agentSearchQuery = '';
+
   function renderAgentsGrid() {
     if (!agentsGrid) return;
     agentsGrid.innerHTML = '';
-    agentsData.slice(0, 48).forEach(name => {
+
+    const filtered = agentsData.filter(agent => {
+      const aName = typeof agent === 'object' ? agent.name : agent;
+      const aRole = typeof agent === 'object' ? agent.role : 'Specialized Agent';
+      const aCat = typeof agent === 'object' ? agent.category : 'General';
+      const aDesc = typeof agent === 'object' ? agent.desc : '';
+      const aSpec = typeof agent === 'object' && agent.specialties ? agent.specialties.join(' ') : '';
+
+      const matchCat = currentAgentCategory === 'all' || aCat === currentAgentCategory;
+      const q = agentSearchQuery.toLowerCase();
+      const matchQuery = !agentSearchQuery || aName.toLowerCase().includes(q) || aRole.toLowerCase().includes(q) || aDesc.toLowerCase().includes(q) || aSpec.toLowerCase().includes(q);
+
+      return matchCat && matchQuery;
+    });
+
+    if (filtered.length === 0) {
+      agentsGrid.innerHTML = `<div class="glass-card" style="grid-column: 1/-1; padding: 40px; text-align: center; color: var(--text-dim);">No agents matching "${agentSearchQuery}".</div>`;
+      return;
+    }
+
+    filtered.forEach(agent => {
+      const aName = typeof agent === 'object' ? agent.name : agent;
+      const aRole = typeof agent === 'object' ? agent.role : 'Specialized Subagent';
+      const aCat = typeof agent === 'object' ? agent.category : 'General';
+      const aDesc = typeof agent === 'object' ? agent.desc : 'Full spectrum automated development agent.';
+      const aSpec = typeof agent === 'object' && agent.specialties ? agent.specialties : ['Autonomous Persona'];
+
       const card = document.createElement('div');
       card.className = 'agent-card glass-card';
       card.innerHTML = `
-        <div class="agent-avatar">🤖</div>
-        <div class="agent-info">
-          <span class="agent-name text-mono">${name}</span>
-          <span class="agent-role">Specialized subagent</span>
+        <div class="skill-header-meta">
+          <span class="tag">${aCat}</span>
+          <span class="text-dim text-mono" style="font-size: 0.68rem;">AGENT</span>
+        </div>
+        <div style="margin-top: 8px;">
+          <h4 class="agent-name text-mono" style="color: #fff; font-size: 1.05rem;">${aName}</h4>
+          <div class="agent-card-role text-mono">${aRole}</div>
+          <p class="agent-desc" style="font-size: 0.82rem; color: var(--text-secondary); line-height: 1.5; margin-bottom: 10px;">${aDesc}</p>
+          <div class="agent-specialties">
+            ${aSpec.map(s => `<span class="tag" style="font-size: 0.65rem;">${s}</span>`).join('')}
+          </div>
+          <button class="btn btn-glass btn-sm agent-btn-engage" data-agent="${aName}">⚡ Engage in Command Deck</button>
         </div>
       `;
+
+      const engageBtn = card.querySelector('.agent-btn-engage');
+      if (engageBtn) {
+        engageBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          setLeadAgentInCommandDeck(aName);
+        });
+      }
+
+      card.addEventListener('mouseenter', playUiHover);
       agentsGrid.appendChild(card);
     });
+  }
+
+  if (agentCatPills) {
+    agentCatPills.forEach(pill => {
+      pill.addEventListener('click', () => {
+        playUiClick();
+        agentCatPills.forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+        currentAgentCategory = pill.getAttribute('data-agent-cat');
+        renderAgentsGrid();
+      });
+    });
+  }
+
+  let agentSearchDebounce;
+  if (agentSearchInput) {
+    agentSearchInput.addEventListener('input', (e) => {
+      clearTimeout(agentSearchDebounce);
+      agentSearchDebounce = setTimeout(() => {
+        agentSearchQuery = e.target.value.trim();
+        renderAgentsGrid();
+      }, 150);
+    });
+  }
+
+  // =========================================================================
+  // 11. Antigravity Neural Command Deck & Swarm Dispatcher Engine
+  // =========================================================================
+  let mountedSkills = ['agentic-engineering', 'backend-patterns', 'make-interfaces-feel-better'];
+  let currentLeadAgent = 'planner';
+
+  const PRESETS = {
+    feature: {
+      agent: 'planner',
+      skills: ['orch-add-feature', 'tdd-guide', 'architect', 'backend-patterns'],
+      goal: 'Architect and implement a high-performance feature end-to-end with regression testing and clean modular design.'
+    },
+    security: {
+      agent: 'security-reviewer',
+      skills: ['security-review', 'backend-patterns', 'OWASP Top 10'],
+      goal: 'Perform a comprehensive zero-vulnerability audit covering boundary validation, secret leakage, and AST enforcement.'
+    },
+    perf: {
+      agent: 'performance-optimizer',
+      skills: ['react-reviewer', 'make-interfaces-feel-better', 'vite-patterns'],
+      goal: 'Audit render loops, eliminate memory leaks, streamline bundle chunks, and optimize Core Web Vitals.'
+    },
+    mobile: {
+      agent: 'a11y-architect',
+      skills: ['make-interfaces-feel-better', 'tailwindcss', 'WCAG 2.2'],
+      goal: 'Polish mobile layout ergonomics, 48px hit areas, safe area insets, and keyboard navigation semantics.'
+    },
+    bug: {
+      agent: 'build-error-resolver',
+      skills: ['orch-fix-defect', 'tdd-guide', 'silent-failure-hunter'],
+      goal: 'Reproduce runtime defect with failing behavioral test, implement surgical fix, and verify green build.'
+    }
+  };
+
+  function setLeadAgentInCommandDeck(agentName) {
+    playSuccessChord();
+    currentLeadAgent = agentName;
+    const select = document.getElementById('cmd-agent-select');
+    if (select) select.value = agentName;
+    updateLeadAgentPreview(agentName);
+    compileDirective();
+    window.switchTab('tab-command');
+  }
+
+  function updateLeadAgentPreview(agentName) {
+    const previewName = document.getElementById('preview-agent-name');
+    const previewDesc = document.getElementById('preview-agent-desc');
+    const found = agentsData.find(a => (typeof a === 'object' ? a.name : a) === agentName);
+
+    if (previewName) previewName.innerText = agentName;
+    if (previewDesc) {
+      if (found && typeof found === 'object') {
+        previewDesc.innerText = `${found.role} — ${found.desc}`;
+      } else {
+        previewDesc.innerText = 'Specialized autonomous Antigravity subagent persona.';
+      }
+    }
+  }
+
+  function renderMountedSkills() {
+    const container = document.getElementById('mounted-skills-container');
+    if (!container) return;
+    container.innerHTML = '';
+    mountedSkills.forEach(s => {
+      const chip = document.createElement('div');
+      chip.className = 'skill-chip-removable';
+      chip.innerHTML = `<span>⚡ ${s}</span><span class="chip-remove-x" title="Remove">&times;</span>`;
+      chip.addEventListener('click', () => {
+        playUiClick();
+        mountedSkills = mountedSkills.filter(x => x !== s);
+        renderMountedSkills();
+        compileDirective();
+      });
+      container.appendChild(chip);
+    });
+  }
+
+  function compileDirective() {
+    const goalInput = document.getElementById('cmd-goal-input');
+    const directiveDisplay = document.getElementById('directive-code-display');
+    if (!directiveDisplay) return;
+
+    const goal = goalInput && goalInput.value.trim() ? goalInput.value.trim() : 'Execute prioritized development directives under strict ECC guidelines.';
+    const found = agentsData.find(a => (typeof a === 'object' ? a.name : a) === currentLeadAgent);
+    const role = found && typeof found === 'object' ? found.role : 'Specialized Agent';
+
+    const compiled = `// ANTIGRAVITY MISSION DIRECTIVE
+LEAD AGENT: ${currentLeadAgent} (${role})
+ACTIVE SKILLS: [${mountedSkills.join(', ')}]
+OBJECTIVE:
+"${goal}"
+
+PROTOCOL:
+1. Plan before modifying files.
+2. Enforce test-driven verification (TDD).
+3. Validate security boundaries with AgentShield AST guard.
+4. Keep changes self-contained, clean, and easily revertible.`;
+
+    directiveDisplay.innerText = compiled;
+  }
+
+  function initCommandDeck() {
+    const cmdAgentSelect = document.getElementById('cmd-agent-select');
+    const cmdGoalInput = document.getElementById('cmd-goal-input');
+    const btnCopyDirective = document.getElementById('btn-copy-directive');
+    const btnDispatchSwarm = document.getElementById('btn-dispatch-swarm');
+    const presetChips = document.querySelectorAll('.preset-chip');
+    const cmdSkillInput = document.getElementById('cmd-skill-input');
+    const skillSearchResults = document.getElementById('skill-search-results');
+
+    // Populate Agent Select dropdown
+    if (cmdAgentSelect && agentsData.length > 0) {
+      cmdAgentSelect.innerHTML = '';
+      const grouped = {};
+      agentsData.forEach(agent => {
+        const cat = typeof agent === 'object' ? agent.category : 'General';
+        const name = typeof agent === 'object' ? agent.name : agent;
+        const role = typeof agent === 'object' ? agent.role : 'Agent';
+        if (!grouped[cat]) grouped[cat] = [];
+        grouped[cat].push({ name, role });
+      });
+
+      Object.keys(grouped).sort().forEach(cat => {
+        const optgroup = document.createElement('optgroup');
+        optgroup.label = cat;
+        grouped[cat].forEach(a => {
+          const opt = document.createElement('option');
+          opt.value = a.name;
+          opt.innerText = `${a.name} (${a.role})`;
+          if (a.name === currentLeadAgent) opt.selected = true;
+          optgroup.appendChild(opt);
+        });
+        cmdAgentSelect.appendChild(optgroup);
+      });
+
+      cmdAgentSelect.addEventListener('change', () => {
+        playUiClick();
+        currentLeadAgent = cmdAgentSelect.value;
+        updateLeadAgentPreview(currentLeadAgent);
+        compileDirective();
+      });
+    }
+
+    updateLeadAgentPreview(currentLeadAgent);
+
+    // Preset Chips
+    presetChips.forEach(chip => {
+      chip.addEventListener('click', () => {
+        playUiClick();
+        presetChips.forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        const pKey = chip.getAttribute('data-preset');
+        const p = PRESETS[pKey];
+        if (p) {
+          currentLeadAgent = p.agent;
+          if (cmdAgentSelect) cmdAgentSelect.value = p.agent;
+          updateLeadAgentPreview(p.agent);
+          mountedSkills = [...p.skills];
+          renderMountedSkills();
+          if (cmdGoalInput) cmdGoalInput.value = p.goal;
+          compileDirective();
+        }
+      });
+    });
+
+    // Skill search in command deck
+    if (cmdSkillInput && skillSearchResults) {
+      cmdSkillInput.addEventListener('input', (e) => {
+        const q = e.target.value.trim().toLowerCase();
+        if (!q) {
+          skillSearchResults.classList.remove('open');
+          skillSearchResults.innerHTML = '';
+          return;
+        }
+
+        const matches = skillsData.filter(s => s.name.toLowerCase().includes(q) || (s.desc && s.desc.toLowerCase().includes(q))).slice(0, 8);
+
+        if (matches.length === 0) {
+          skillSearchResults.innerHTML = `<div class="skill-result-item" style="color: var(--text-dim);">No skill found.</div>`;
+        } else {
+          skillSearchResults.innerHTML = matches.map(m => `
+            <div class="skill-result-item" data-skill="${m.name}">
+              <span>⚡ ${m.name}</span>
+              <span class="tag" style="font-size: 0.65rem;">${m.category}</span>
+            </div>
+          `).join('');
+
+          skillSearchResults.querySelectorAll('.skill-result-item').forEach(el => {
+            el.addEventListener('click', () => {
+              const sName = el.getAttribute('data-skill');
+              if (sName && !mountedSkills.includes(sName)) {
+                mountedSkills.push(sName);
+                renderMountedSkills();
+                compileDirective();
+                playUiClick();
+              }
+              cmdSkillInput.value = '';
+              skillSearchResults.classList.remove('open');
+            });
+          });
+        }
+        skillSearchResults.classList.add('open');
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!cmdSkillInput.contains(e.target) && !skillSearchResults.contains(e.target)) {
+          skillSearchResults.classList.remove('open');
+        }
+      });
+    }
+
+    if (cmdGoalInput) {
+      cmdGoalInput.addEventListener('input', compileDirective);
+    }
+
+    renderMountedSkills();
+    compileDirective();
+
+    // Copy Directive Button
+    if (btnCopyDirective) {
+      btnCopyDirective.addEventListener('click', () => {
+        playSuccessChord();
+        const directiveDisplay = document.getElementById('directive-code-display');
+        if (directiveDisplay) {
+          navigator.clipboard.writeText(directiveDisplay.innerText).then(() => {
+            btnCopyDirective.innerText = '✓ Directive Copied!';
+            setTimeout(() => { btnCopyDirective.innerText = '📋 Copy Directive'; }, 1800);
+          });
+        }
+      });
+    }
+
+    // Dispatch Swarm Button
+    if (btnDispatchSwarm) {
+      btnDispatchSwarm.addEventListener('click', () => {
+        dispatchSwarmExecution();
+      });
+    }
+  }
+
+  function dispatchSwarmExecution() {
+    playSuccessChord();
+    const terminalOutput = document.getElementById('terminal-output');
+    const terminalStatusBadge = document.getElementById('terminal-status-badge');
+    const swarmProgressWrap = document.getElementById('swarm-progress-wrap');
+    const swarmStageLabel = document.getElementById('swarm-stage-label');
+    const swarmStagePct = document.getElementById('swarm-stage-pct');
+    const swarmProgressFill = document.getElementById('swarm-progress-fill');
+
+    if (terminalStatusBadge) {
+      terminalStatusBadge.innerText = 'SWARM ACTIVE';
+      terminalStatusBadge.className = 'badge badge-accent text-mono';
+    }
+
+    if (swarmProgressWrap) swarmProgressWrap.style.display = 'flex';
+
+    const stages = [
+      { pct: 20, label: `MOUNTING [${currentLeadAgent}] + ${mountedSkills.length} SKILLS...`, log: `> Initializing ${currentLeadAgent} persona. Loading modular skills: ${mountedSkills.slice(0, 3).join(', ')}...` },
+      { pct: 45, label: 'ENFORCING AGENTSHIELD AST POLICY...', log: `> AST Security Scan: AgentShield v1.6.0 boundary policy ENFORCED. No unauthorized network leaks.` },
+      { pct: 70, label: 'SYNTHESIZING TDD EXECUTION BLUEPRINT...', log: `> Test harness activated. Formulating failing test criteria before code synthesis.` },
+      { pct: 90, label: 'COORDINATING SUBAGENT WORKERS...', log: `> Multi-agent swarm engaged. Telemetry and memory synced across .agents channels.` },
+      { pct: 100, label: 'SWARM MISSION COMPLETE', log: `> SUCCESS: Swarm execution cycle complete. Activity logged to Cockpit Effort Vault.` }
+    ];
+
+    let step = 0;
+    const interval = setInterval(() => {
+      if (step >= stages.length) {
+        clearInterval(interval);
+        if (terminalStatusBadge) {
+          terminalStatusBadge.innerText = 'SYNCHRONIZED';
+          terminalStatusBadge.className = 'badge text-positive text-mono';
+        }
+        playSuccessChord();
+
+        // Record to live task timeline!
+        const newTask = {
+          id: `task-0${(window._staticEfforts ? window._staticEfforts.length : 10) + 1}`,
+          timestamp: new Date().toISOString().replace('T', ' ').slice(0, 19),
+          category: 'Swarm Mission',
+          title: `Mission Dispatched: ${currentLeadAgent}`,
+          detail: `Autonomous swarm directive dispatched with ${mountedSkills.length} mounted skills: ${mountedSkills.join(', ')}.`,
+          status: 'Active',
+          impact: 'Live multi-agent execution logged directly in Cockpit.'
+        };
+
+        if (window._staticEfforts) {
+          window._staticEfforts.unshift(newTask);
+          renderEfforts(window._staticEfforts);
+          const badge = document.getElementById('effort-count-badge');
+          if (badge) badge.innerText = window._staticEfforts.length;
+        }
+        return;
+      }
+
+      const cur = stages[step];
+      playTone(600 + step * 120, 'triangle', 0.08, 0.03);
+
+      if (swarmStageLabel) swarmStageLabel.innerText = cur.label;
+      if (swarmStagePct) swarmStagePct.innerText = `${cur.pct}%`;
+      if (swarmProgressFill) swarmProgressFill.style.width = `${cur.pct}%`;
+
+      if (terminalOutput) {
+        const p = document.createElement('p');
+        p.className = 't-line text-accent';
+        p.innerText = cur.log;
+        terminalOutput.appendChild(p);
+        terminalOutput.scrollTop = terminalOutput.scrollHeight;
+      }
+
+      step++;
+    }, 450);
   }
 
   // Initialize

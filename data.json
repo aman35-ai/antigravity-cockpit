@@ -1,82 +1,817 @@
 {
   "stats": {
     "skillsCount": 482,
-    "agentsCount": 71,
+    "agentsCount": 73,
     "workflowsCount": 97,
     "rulesCount": 122
   },
   "agents": [
-    "a11y-architect",
-    "agent-evaluator",
-    "architect",
-    "bengali-reviewer",
-    "build-error-resolver",
-    "chief-of-staff",
-    "code-architect",
-    "code-explorer",
-    "code-reviewer",
-    "code-simplifier",
-    "comment-analyzer",
-    "commit-reviewer",
-    "conversation-analyzer",
-    "cpp-build-resolver",
-    "cpp-reviewer",
-    "csharp-reviewer",
-    "dart-build-resolver",
-    "database-reviewer",
-    "django-build-resolver",
-    "django-reviewer",
-    "doc-updater",
-    "docs-lookup",
-    "e2e-runner",
-    "fastapi-reviewer",
-    "flutter-reviewer",
-    "fsharp-reviewer",
-    "gan-evaluator",
-    "gan-generator",
-    "gan-planner",
-    "go-build-resolver",
-    "go-reviewer",
-    "harmonyos-app-resolver",
-    "harness-optimizer",
-    "healthcare-reviewer",
-    "homelab-architect",
-    "java-build-resolver",
-    "java-reviewer",
-    "kotlin-build-resolver",
-    "kotlin-reviewer",
-    "loop-operator",
-    "marketing-agent",
-    "mle-reviewer",
-    "network-architect",
-    "network-config-reviewer",
-    "network-troubleshooter",
-    "opensource-forker",
-    "opensource-packager",
-    "opensource-sanitizer",
-    "performance-optimizer",
-    "php-reviewer",
-    "planner",
-    "pr-test-analyzer",
-    "python-reviewer",
-    "pytorch-build-resolver",
-    "rag-pipeline-reviewer",
-    "react-build-resolver",
-    "react-reviewer",
-    "refactor-cleaner",
-    "ruby-reviewer",
-    "rust-build-resolver",
-    "rust-reviewer",
-    "security-reviewer",
-    "seo-specialist",
-    "silent-failure-hunter",
-    "spec-miner",
-    "swift-build-resolver",
-    "swift-reviewer",
-    "tdd-guide",
-    "type-design-analyzer",
-    "typescript-reviewer",
-    "vue-reviewer"
+    {
+      "name": "a11y-architect",
+      "role": "Accessibility Architect",
+      "category": "Design & UX",
+      "desc": "Specializes in WCAG 2.2 compliance for Web and Native platforms, inclusive user flows, screen-reader semantics and keyboard navigation.",
+      "specialties": [
+        "WCAG 2.2",
+        "ARIA",
+        "Color Contrast",
+        "Keyboard Nav"
+      ]
+    },
+    {
+      "name": "agent-evaluator",
+      "role": "Agent Evaluator",
+      "category": "AI & Testing",
+      "desc": "Evaluates AI agent completions against rubrics, tests outputs, and provides actionable pass@k grading.",
+      "specialties": [
+        "Eval Harness",
+        "Benchmark",
+        "Quality Scoring"
+      ]
+    },
+    {
+      "name": "architect",
+      "role": "System Architect",
+      "category": "Architecture",
+      "desc": "Software architecture specialist for distributed systems design, scalability, microservice boundaries, and technical decision-making.",
+      "specialties": [
+        "System Design",
+        "Scalability",
+        "ADR",
+        "Clean Arch"
+      ]
+    },
+    {
+      "name": "bengali-reviewer",
+      "role": "Bengali NLP Specialist",
+      "category": "Language & i18n",
+      "desc": "Reviews code handling Bengali (Bangla) text for Unicode correctness, proper normalization, script-aware tokenization and i18n.",
+      "specialties": [
+        "Unicode",
+        "Bangla NLP",
+        "Tokenization"
+      ]
+    },
+    {
+      "name": "build-error-resolver",
+      "role": "Build & TS Resolver",
+      "category": "DevOps & Build",
+      "desc": "Build and TypeScript error resolution specialist. Fixes compiler errors with minimal, surgical diffs.",
+      "specialties": [
+        "TypeScript",
+        "Compiler Errors",
+        "Bundling"
+      ]
+    },
+    {
+      "name": "chief-of-staff",
+      "role": "Autonomous Orchestrator",
+      "category": "Architecture",
+      "desc": "Coordinates complex cross-functional agent missions, unblocks bottlenecks, and monitors execution cadence.",
+      "specialties": [
+        "Task Decomposition",
+        "Orchestration",
+        "Cadence"
+      ]
+    },
+    {
+      "name": "code-architect",
+      "role": "Feature Architect",
+      "category": "Architecture",
+      "desc": "Designs feature architectures by analyzing existing codebase patterns, interfaces, data flow, and phased build order.",
+      "specialties": [
+        "Interface Design",
+        "Data Flow",
+        "Conventions"
+      ]
+    },
+    {
+      "name": "code-explorer",
+      "role": "Codebase Explorer",
+      "category": "Architecture",
+      "desc": "Deeply analyzes existing codebase features by tracing execution paths, mapping architecture layers, and documenting dependencies.",
+      "specialties": [
+        "Path Tracing",
+        "Dependency Mapping",
+        "Discovery"
+      ]
+    },
+    {
+      "name": "code-reviewer",
+      "role": "Expert Code Reviewer",
+      "category": "Code Review",
+      "desc": "Proactively reviews code for maintainability, security, bug prevention, and adherence to clean coding principles.",
+      "specialties": [
+        "Code Quality",
+        "Bug Prevention",
+        "Clean Code"
+      ]
+    },
+    {
+      "name": "code-simplifier",
+      "role": "Code Simplifier",
+      "category": "Refactoring",
+      "desc": "Simplifies and refines complex code for clarity, elegance, and maintainability while strictly preserving existing behavior.",
+      "specialties": [
+        "Refactoring",
+        "DRY",
+        "Readability"
+      ]
+    },
+    {
+      "name": "comment-analyzer",
+      "role": "Comment Quality Analyst",
+      "category": "Code Review",
+      "desc": "Analyzes code comments for accuracy, completeness, maintainability, and identifies comment rot risk.",
+      "specialties": [
+        "Documentation",
+        "Docstrings",
+        "Comment Rot"
+      ]
+    },
+    {
+      "name": "commit-reviewer",
+      "role": "Conventional Commit Specialist",
+      "category": "DevOps & Build",
+      "desc": "Reviews staged diffs and drafts Conventional Commits-compliant messages matching repository norms.",
+      "specialties": [
+        "Git Norms",
+        "Semantic Commits",
+        "Changelogs"
+      ]
+    },
+    {
+      "name": "conversation-analyzer",
+      "role": "Transcript Analyzer",
+      "category": "AI & Testing",
+      "desc": "Analyzes conversation transcripts to find recurring anti-patterns and craft automated prevention hooks.",
+      "specialties": [
+        "Hookify",
+        "Transcript Analysis",
+        "Rule Synthesis"
+      ]
+    },
+    {
+      "name": "cpp-build-resolver",
+      "role": "C++ Build Specialist",
+      "category": "DevOps & Build",
+      "desc": "C++ build, CMake, and compilation error resolution specialist. Fixes linker issues and template errors.",
+      "specialties": [
+        "CMake",
+        "Linker Issues",
+        "Templates"
+      ]
+    },
+    {
+      "name": "cpp-reviewer",
+      "role": "C++ Expert Reviewer",
+      "category": "Code Review",
+      "desc": "Specializes in memory safety, RAII, modern C++20/23 idioms, concurrency, and high-performance algorithms.",
+      "specialties": [
+        "RAII",
+        "Modern C++",
+        "Memory Safety"
+      ]
+    },
+    {
+      "name": "csharp-reviewer",
+      "role": "C# / .NET Reviewer",
+      "category": "Code Review",
+      "desc": "Expert C# code reviewer specializing in .NET conventions, async patterns, nullable reference types, and performance.",
+      "specialties": [
+        ".NET 9",
+        "Async/Await",
+        "Entity Framework"
+      ]
+    },
+    {
+      "name": "dart-build-resolver",
+      "role": "Dart / Flutter Resolver",
+      "category": "Mobile & UI",
+      "desc": "Fixes dart analyze errors, Flutter compilation failures, pub dependency conflicts, and build_runner issues.",
+      "specialties": [
+        "Flutter",
+        "Dart",
+        "Pub Spec"
+      ]
+    },
+    {
+      "name": "database-reviewer",
+      "role": "PostgreSQL Specialist",
+      "category": "Backend & Data",
+      "desc": "PostgreSQL database specialist for query optimization, schema design, index tuning, and Supabase RLS security.",
+      "specialties": [
+        "PostgreSQL",
+        "Query Plans",
+        "RLS",
+        "Indexing"
+      ]
+    },
+    {
+      "name": "django-build-resolver",
+      "role": "Django Build Resolver",
+      "category": "Backend & Data",
+      "desc": "Fixes pip/Poetry errors, migration conflicts, Django settings issues, and collectstatic failures.",
+      "specialties": [
+        "Django",
+        "Migrations",
+        "Poetry"
+      ]
+    },
+    {
+      "name": "django-reviewer",
+      "role": "Django Expert Reviewer",
+      "category": "Code Review",
+      "desc": "Specializes in Django ORM correctness, DRF patterns, migration safety, caching, and production security.",
+      "specialties": [
+        "DRF",
+        "ORM Safety",
+        "Django Caching"
+      ]
+    },
+    {
+      "name": "doc-updater",
+      "role": "Documentation Specialist",
+      "category": "Documentation",
+      "desc": "Generates docs/CODEMAPS/*, maintains living architecture docs, READMEs, and technical runbooks.",
+      "specialties": [
+        "Codemaps",
+        "Living Docs",
+        "Markdown"
+      ]
+    },
+    {
+      "name": "docs-lookup",
+      "role": "Context7 Docs Specialist",
+      "category": "Documentation",
+      "desc": "Fetches up-to-date framework documentation and real API examples using live Context7 MCP lookups.",
+      "specialties": [
+        "Context7",
+        "API Docs",
+        "Code Examples"
+      ]
+    },
+    {
+      "name": "e2e-runner",
+      "role": "E2E Testing Specialist",
+      "category": "Testing & QA",
+      "desc": "End-to-end testing specialist using Playwright. Manages test journeys, quarantines flaky tests, and records traces.",
+      "specialties": [
+        "Playwright",
+        "Test Journeys",
+        "CI Artifacts"
+      ]
+    },
+    {
+      "name": "fastapi-reviewer",
+      "role": "FastAPI Expert Reviewer",
+      "category": "Backend & Data",
+      "desc": "Reviews FastAPI apps for async correctness, Pydantic schemas, dependency injection, and OpenAPI quality.",
+      "specialties": [
+        "FastAPI",
+        "Pydantic v2",
+        "Async IO"
+      ]
+    },
+    {
+      "name": "flutter-reviewer",
+      "role": "Flutter / Dart Reviewer",
+      "category": "Mobile & UI",
+      "desc": "Reviews Flutter apps for widget best practices, state management patterns, 60fps render performance, and accessibility.",
+      "specialties": [
+        "Flutter",
+        "Widget Lifecycle",
+        "State Mgmt"
+      ]
+    },
+    {
+      "name": "fsharp-reviewer",
+      "role": "F# Functional Reviewer",
+      "category": "Code Review",
+      "desc": "Expert in functional idioms, type safety, pattern matching, computation expressions, and immutability.",
+      "specialties": [
+        "F#",
+        "Functional Design",
+        "Pattern Matching"
+      ]
+    },
+    {
+      "name": "gan-evaluator",
+      "role": "GAN Quality Evaluator",
+      "category": "AI & Testing",
+      "desc": "Tests live running applications via Playwright, scores against rubrics, and supplies actionable critique.",
+      "specialties": [
+        "GAN Rubric",
+        "Visual QA",
+        "Scoring"
+      ]
+    },
+    {
+      "name": "gan-generator",
+      "role": "GAN Feature Generator",
+      "category": "AI & Testing",
+      "desc": "Implements features according to specs, incorporates evaluator feedback, and iterates until passing.",
+      "specialties": [
+        "Iterative Gen",
+        "Code Synthesis",
+        "Feature Polish"
+      ]
+    },
+    {
+      "name": "gan-planner",
+      "role": "GAN Product Planner",
+      "category": "AI & Testing",
+      "desc": "Expands one-line prompts into full product specifications, sprints, evaluation criteria, and design directions.",
+      "specialties": [
+        "Product Spec",
+        "Sprint Planning",
+        "Acceptance"
+      ]
+    },
+    {
+      "name": "go-build-resolver",
+      "role": "Go Build Specialist",
+      "category": "DevOps & Build",
+      "desc": "Go build, vet, and compilation error resolution specialist. Fixes module and linter issues with surgical diffs.",
+      "specialties": [
+        "Go Modules",
+        "Go Vet",
+        "Compiler Fixes"
+      ]
+    },
+    {
+      "name": "go-reviewer",
+      "role": "Go Expert Reviewer",
+      "category": "Code Review",
+      "desc": "Reviews idiomatic Go code, goroutine leak prevention, channel safety, error wrapping, and memory allocations.",
+      "specialties": [
+        "Concurrency",
+        "Channels",
+        "Idiomatic Go"
+      ]
+    },
+    {
+      "name": "harmonyos-app-resolver",
+      "role": "HarmonyOS Specialist",
+      "category": "Mobile & UI",
+      "desc": "HarmonyOS app development expert in ArkTS, ArkUI, V2 state management, and Navigation routing patterns.",
+      "specialties": [
+        "ArkTS",
+        "ArkUI",
+        "HarmonyOS"
+      ]
+    },
+    {
+      "name": "harness-optimizer",
+      "role": "Harness Optimizer",
+      "category": "AI & Testing",
+      "desc": "Improves local agent-harness reliability and cost using eval-driven grading (pass@k) and action space tuning.",
+      "specialties": [
+        "Pass@k",
+        "Action Space",
+        "Cost Reduction"
+      ]
+    },
+    {
+      "name": "healthcare-reviewer",
+      "role": "Healthcare & CDSS Reviewer",
+      "category": "Security & Compliance",
+      "desc": "Reviews healthcare application code for clinical safety, CDSS accuracy, PHI compliance, and medical data integrity.",
+      "specialties": [
+        "HIPAA",
+        "CDSS",
+        "PHI Protection"
+      ]
+    },
+    {
+      "name": "homelab-architect",
+      "role": "Homelab Network Architect",
+      "category": "Infrastructure",
+      "desc": "Designs home and small-lab network plans, VLAN segmentation, Pi-hole DNS, and safe rollback guidance.",
+      "specialties": [
+        "VLAN",
+        "Pi-hole",
+        "WireGuard"
+      ]
+    },
+    {
+      "name": "image-generator",
+      "role": "Visual Asset Generator",
+      "category": "Design & UX",
+      "desc": "Generates and edits visual design assets, logos, and illustration briefs with precise execution.",
+      "specialties": [
+        "Asset Gen",
+        "Design Prompts",
+        "Visuals"
+      ]
+    },
+    {
+      "name": "java-build-resolver",
+      "role": "Java / Maven Resolver",
+      "category": "DevOps & Build",
+      "desc": "Java/Maven/Gradle build error resolution specialist. Automatically detects Spring Boot or Quarkus.",
+      "specialties": [
+        "Maven",
+        "Gradle",
+        "Spring Boot"
+      ]
+    },
+    {
+      "name": "java-reviewer",
+      "role": "Java / Spring Boot Reviewer",
+      "category": "Code Review",
+      "desc": "Reviews layered architecture, JPA/Panache, MongoDB, concurrency, and security in enterprise Java apps.",
+      "specialties": [
+        "Spring Boot",
+        "JPA",
+        "Quarkus"
+      ]
+    },
+    {
+      "name": "kotlin-build-resolver",
+      "role": "Kotlin / Gradle Resolver",
+      "category": "DevOps & Build",
+      "desc": "Fixes Kotlin compiler errors, Gradle dependencies, and Multiplatform build issues with minimal changes.",
+      "specialties": [
+        "Kotlin",
+        "Gradle",
+        "KMP"
+      ]
+    },
+    {
+      "name": "kotlin-reviewer",
+      "role": "Kotlin / Compose Reviewer",
+      "category": "Mobile & UI",
+      "desc": "Reviews Kotlin code for idiomatic patterns, coroutines/Flows, Jetpack Compose, and clean architecture.",
+      "specialties": [
+        "Coroutines",
+        "Jetpack Compose",
+        "Flows"
+      ]
+    },
+    {
+      "name": "loop-operator",
+      "role": "Loop Operator",
+      "category": "AI & Testing",
+      "desc": "Operates autonomous agent loops, monitors execution telemetry, and safely intervenes when loops stall.",
+      "specialties": [
+        "Autonomous Loops",
+        "Self-Healing",
+        "Watchdog"
+      ]
+    },
+    {
+      "name": "marketing-agent",
+      "role": "Growth & Product Strategist",
+      "category": "Strategy",
+      "desc": "Analyzes product positioning, messaging frameworks, launch sequences, and value proposition clarity.",
+      "specialties": [
+        "Positioning",
+        "Copywriting",
+        "Growth"
+      ]
+    },
+    {
+      "name": "mle-reviewer",
+      "role": "ML Engineering Reviewer",
+      "category": "AI & Testing",
+      "desc": "Reviews ML code for data contracts, feature pipelines, training reproducibility, model serving, and drift monitoring.",
+      "specialties": [
+        "MLOps",
+        "Model Serving",
+        "Data Contracts"
+      ]
+    },
+    {
+      "name": "network-architect",
+      "role": "Enterprise Network Architect",
+      "category": "Infrastructure",
+      "desc": "Designs enterprise multi-site network architectures, BGP routing, firewall policies, and fault tolerance.",
+      "specialties": [
+        "BGP",
+        "Cisco IOS",
+        "SD-WAN"
+      ]
+    },
+    {
+      "name": "network-config-reviewer",
+      "role": "Network Config Reviewer",
+      "category": "Infrastructure",
+      "desc": "Reviews router and switch configs for security, ACL correctness, stale references, and change windows.",
+      "specialties": [
+        "ACL",
+        "Switching",
+        "Config Audit"
+      ]
+    },
+    {
+      "name": "network-troubleshooter",
+      "role": "Network Troubleshooter",
+      "category": "Infrastructure",
+      "desc": "Diagnoses connectivity, DNS, routing, interface, and policy symptoms using OSI-layer workflows.",
+      "specialties": [
+        "OSI Layer",
+        "DNS Debug",
+        "Packet Analysis"
+      ]
+    },
+    {
+      "name": "opensource-forker",
+      "role": "Open-Source Forker",
+      "category": "DevOps & Build",
+      "desc": "Forks projects for public open-sourcing. Strips credentials, sanitizes histories, and prepares repos.",
+      "specialties": [
+        "Sanitization",
+        "Secret Stripping",
+        "Open Source"
+      ]
+    },
+    {
+      "name": "opensource-packager",
+      "role": "Open-Source Packager",
+      "category": "DevOps & Build",
+      "desc": "Generates complete open-source packaging: CLAUDE.md, setup.sh, README, LICENSE, and CONTRIBUTING.",
+      "specialties": [
+        "Packaging",
+        "CLAUDE.md",
+        "Setup Scripts"
+      ]
+    },
+    {
+      "name": "opensource-sanitizer",
+      "role": "Repo Sanitizer",
+      "category": "Security & Compliance",
+      "desc": "Deep scans repositories for leaked private URLs, tokens, and PII before public release.",
+      "specialties": [
+        "PII Audit",
+        "Secret Detection",
+        "Clean History"
+      ]
+    },
+    {
+      "name": "performance-optimizer",
+      "role": "Performance Specialist",
+      "category": "Performance",
+      "desc": "Profiles runtime bottlenecks, optimizes slow queries, reduces bundle sizes, and improves Core Web Vitals.",
+      "specialties": [
+        "Bundle Splitting",
+        "Web Vitals",
+        "Profiling"
+      ]
+    },
+    {
+      "name": "php-reviewer",
+      "role": "PHP / Laravel Reviewer",
+      "category": "Code Review",
+      "desc": "Expert PHP code reviewer specializing in PSR-12 compliance, type safety, Eloquent queries, and security.",
+      "specialties": [
+        "Laravel 11",
+        "Eloquent",
+        "PHP 8.3"
+      ]
+    },
+    {
+      "name": "planner",
+      "role": "Strategic Master Planner",
+      "category": "Architecture",
+      "desc": "Expert planning specialist for complex features, architectural refactors, and multi-phase implementation plans.",
+      "specialties": [
+        "Feature Roadmaps",
+        "Task Breakdown",
+        "Risk Mitigation"
+      ]
+    },
+    {
+      "name": "pr-test-analyzer",
+      "role": "PR Test Coverage Analyzer",
+      "category": "Testing & QA",
+      "desc": "Reviews pull request test coverage quality and completeness, ensuring behavioral regression prevention.",
+      "specialties": [
+        "Behavioral Testing",
+        "Edge Cases",
+        "Coverage"
+      ]
+    },
+    {
+      "name": "python-reviewer",
+      "role": "Pythonic Code Reviewer",
+      "category": "Code Review",
+      "desc": "Reviews Python code for PEP 8 compliance, idiomatic constructs, type hints, security, and algorithmic efficiency.",
+      "specialties": [
+        "PEP 8",
+        "Type Annotations",
+        "Python 3.13"
+      ]
+    },
+    {
+      "name": "pytorch-build-resolver",
+      "role": "PyTorch & CUDA Specialist",
+      "category": "AI & Testing",
+      "desc": "Fixes tensor shape mismatches, CUDA device errors, gradient calculation bugs, and mixed precision failures.",
+      "specialties": [
+        "PyTorch",
+        "CUDA",
+        "Tensor Ops"
+      ]
+    },
+    {
+      "name": "rag-pipeline-reviewer",
+      "role": "RAG Pipeline Reviewer",
+      "category": "AI & Testing",
+      "desc": "Reviews RAG pipelines for retrieval quality, chunking strategies, embedding choices, and vector indexing.",
+      "specialties": [
+        "Vector Search",
+        "Chunking",
+        "Embeddings"
+      ]
+    },
+    {
+      "name": "react-build-resolver",
+      "role": "React / Vite Resolver",
+      "category": "Mobile & UI",
+      "desc": "Resolves JSX compilation issues, bundler errors, CSS module conflicts, and hydration mismatches.",
+      "specialties": [
+        "Hydration",
+        "Vite Config",
+        "JSX Errors"
+      ]
+    },
+    {
+      "name": "react-reviewer",
+      "role": "React & Next.js Reviewer",
+      "category": "Mobile & UI",
+      "desc": "Reviews React code for hook correctness, render performance, server/client component boundaries, and accessibility.",
+      "specialties": [
+        "Next.js App Router",
+        "React Hooks",
+        "RSC"
+      ]
+    },
+    {
+      "name": "refactor-cleaner",
+      "role": "Dead Code Cleaner",
+      "category": "Refactoring",
+      "desc": "Runs knip and depcheck to identify unused files, dead exports, and safely consolidates codebases.",
+      "specialties": [
+        "Dead Code Removal",
+        "Knip",
+        "Consolidation"
+      ]
+    },
+    {
+      "name": "research",
+      "role": "Codebase & Web Researcher",
+      "category": "Research",
+      "desc": "Deep exploratory research across repositories, web documentation, and technical archives.",
+      "specialties": [
+        "Deep Search",
+        "Code Survey",
+        "Context Synthesis"
+      ]
+    },
+    {
+      "name": "ruby-reviewer",
+      "role": "Ruby on Rails Reviewer",
+      "category": "Code Review",
+      "desc": "Specializes in idiomatic Ruby, Active Record query safety, N+1 query elimination, and RSpec testing.",
+      "specialties": [
+        "Rails 8",
+        "Active Record",
+        "RSpec"
+      ]
+    },
+    {
+      "name": "rust-build-resolver",
+      "role": "Rust / Cargo Specialist",
+      "category": "DevOps & Build",
+      "desc": "Fixes cargo build errors, borrow checker lifecycle issues, trait bounds, and Cargo.toml dependencies.",
+      "specialties": [
+        "Borrow Checker",
+        "Cargo",
+        "Lifetimes"
+      ]
+    },
+    {
+      "name": "rust-reviewer",
+      "role": "Rust Safety Reviewer",
+      "category": "Code Review",
+      "desc": "Reviews Rust code for ownership correctness, error handling with Result, trait composition, and unsafe usage.",
+      "specialties": [
+        "Ownership",
+        "Zero-Cost Abstractions",
+        "Unsafe Audit"
+      ]
+    },
+    {
+      "name": "security-reviewer",
+      "role": "Security Vulnerability Auditor",
+      "category": "Security & Compliance",
+      "desc": "Detects secrets, SSRF, injection, CSRF, insecure crypto, and OWASP Top 10 vulnerabilities.",
+      "specialties": [
+        "OWASP Top 10",
+        "AgentShield",
+        "Secret Audit"
+      ]
+    },
+    {
+      "name": "seo-specialist",
+      "role": "Technical SEO Specialist",
+      "category": "Strategy",
+      "desc": "Audits technical SEO, on-page optimization, structured JSON-LD schemas, sitemaps, and Core Web Vitals.",
+      "specialties": [
+        "JSON-LD",
+        "Core Web Vitals",
+        "Sitemaps"
+      ]
+    },
+    {
+      "name": "silent-failure-hunter",
+      "role": "Silent Failure Hunter",
+      "category": "Code Review",
+      "desc": "Hunts down swallowed errors, silent empty catches, bad default fallbacks, and missing error propagation.",
+      "specialties": [
+        "Error Propagation",
+        "Catch Audits",
+        "Resilience"
+      ]
+    },
+    {
+      "name": "spec-miner",
+      "role": "Spec & Requirement Miner",
+      "category": "Architecture",
+      "desc": "Extracts implicit business rules and edge-case contracts from existing code to formulate precise specs.",
+      "specialties": [
+        "Spec Extraction",
+        "Contract Mining",
+        "Invariants"
+      ]
+    },
+    {
+      "name": "swift-build-resolver",
+      "role": "Swift & Xcode Specialist",
+      "category": "Mobile & UI",
+      "desc": "Fixes Swift compiler errors, SPM package resolution issues, concurrency warnings, and Xcode targets.",
+      "specialties": [
+        "SPM",
+        "Swift 6",
+        "Xcode Build"
+      ]
+    },
+    {
+      "name": "swift-reviewer",
+      "role": "Swift & SwiftUI Reviewer",
+      "category": "Mobile & UI",
+      "desc": "Reviews Swift code for protocol-oriented design, value types, ARC memory management, and Swift Concurrency.",
+      "specialties": [
+        "SwiftUI",
+        "Actors",
+        "Concurrency"
+      ]
+    },
+    {
+      "name": "tdd-guide",
+      "role": "Test-Driven Dev Specialist",
+      "category": "Testing & QA",
+      "desc": "Enforces strict write-tests-first methodology. Ensures 80%+ behavioral test coverage and regression protection.",
+      "specialties": [
+        "TDD Workflow",
+        "Red-Green-Refactor",
+        "Coverage"
+      ]
+    },
+    {
+      "name": "type-design-analyzer",
+      "role": "Type Design Specialist",
+      "category": "Architecture",
+      "desc": "Analyzes type design for encapsulation, invariant expression, algebraic data types, and compile-time enforcement.",
+      "specialties": [
+        "Algebraic Types",
+        "Invariants",
+        "Type Systems"
+      ]
+    },
+    {
+      "name": "typescript-reviewer",
+      "role": "TypeScript Expert Reviewer",
+      "category": "Code Review",
+      "desc": "Reviews TypeScript code for type safety, generic constraints, async/await correctness, and runtime boundaries.",
+      "specialties": [
+        "TypeScript 5+",
+        "Strict Mode",
+        "Generics"
+      ]
+    },
+    {
+      "name": "vue-reviewer",
+      "role": "Vue.js & Nuxt Reviewer",
+      "category": "Mobile & UI",
+      "desc": "Reviews Vue 3 Composition API, Nuxt 4 SSR, Pinia state stores, and component re-render performance.",
+      "specialties": [
+        "Vue 3",
+        "Nuxt 4",
+        "Pinia"
+      ]
+    }
   ],
   "workflows": [
     "aside",

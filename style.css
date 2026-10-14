@@ -1581,3 +1581,677 @@ p {
   white-space: pre-wrap;
   word-break: break-all;
 }
+
+
+/* ==========================================================================
+   NEURAL COMMAND DECK & MULTI-AGENT SWARM CONSOLE
+   ========================================================================== */
+
+/* Tactical Corner Brackets for High-Tech HUD */
+.glass-panel, .glass-card {
+  position: relative;
+}
+
+.glass-panel::before, .glass-panel::after,
+.glass-card::before, .glass-card::after {
+  content: '';
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  pointer-events: none;
+  transition: all var(--transition-fast);
+}
+
+.glass-panel::before, .glass-card::before {
+  top: 0;
+  left: 0;
+  border-top: 2px solid var(--accent-cyan);
+  border-left: 2px solid var(--accent-cyan);
+  border-top-left-radius: 4px;
+  opacity: 0.6;
+}
+
+.glass-panel::after, .glass-card::after {
+  bottom: 0;
+  right: 0;
+  border-bottom: 2px solid var(--accent-cyan);
+  border-right: 2px solid var(--accent-cyan);
+  border-bottom-right-radius: 4px;
+  opacity: 0.6;
+}
+
+.glass-card:hover::before, .glass-card:hover::after {
+  opacity: 1;
+  width: 10px;
+  height: 10px;
+  box-shadow: 0 0 8px var(--accent-cyan);
+}
+
+/* Highlight Tab */
+.nav-tab.highlight-tab {
+  background: rgba(59, 130, 246, 0.22);
+  border: 1px solid var(--border-accent);
+  color: #ffffff;
+  box-shadow: 0 0 16px rgba(56, 189, 248, 0.25);
+}
+
+.nav-tab.highlight-tab:hover, .nav-tab.highlight-tab.active {
+  background: var(--accent-primary);
+  color: #ffffff;
+  box-shadow: 0 0 20px var(--accent-glow-strong);
+}
+
+/* Command HUD Bar */
+.command-hud-bar {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  padding: 16px 24px;
+  margin-bottom: 24px;
+}
+
+.hud-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.hud-label {
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  letter-spacing: 0.05em;
+}
+
+.hud-val {
+  font-size: 0.95rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Command Console Grid */
+.command-console-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+.command-controls {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: 12px;
+}
+
+.panel-title {
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--text-primary);
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-label {
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  letter-spacing: 0.05em;
+}
+
+.form-control {
+  width: 100%;
+  background: var(--bg-input);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+  border-radius: var(--radius-inner);
+  padding: 12px 14px;
+  font-size: 0.86rem;
+  font-family: inherit;
+  transition: all var(--transition-fast);
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: var(--accent-cyan);
+  box-shadow: 0 0 15px var(--accent-glow);
+}
+
+/* Preset Chips */
+.preset-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.preset-chip {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  border-radius: var(--radius-pill);
+  padding: 7px 13px;
+  font-size: 0.76rem;
+  font-family: var(--font-mono);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.preset-chip:hover {
+  background: rgba(59, 130, 246, 0.15);
+  border-color: var(--accent-cyan);
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.preset-chip.active {
+  background: rgba(59, 130, 246, 0.3);
+  border-color: var(--accent-cyan);
+  color: var(--accent-cyan);
+  box-shadow: 0 0 10px var(--accent-glow);
+}
+
+/* Selected Agent Preview */
+.selected-agent-preview {
+  padding: 12px 16px;
+  border-radius: var(--radius-inner);
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--border-subtle);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.agent-preview-name {
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.agent-preview-desc {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+/* Skill Picker & Search */
+.skill-picker-wrap {
+  position: relative;
+}
+
+.skill-search-results {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #090e1a;
+  border: 1px solid var(--border-accent);
+  border-radius: var(--radius-inner);
+  max-height: 190px;
+  overflow-y: auto;
+  z-index: 100;
+  display: none;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+}
+
+.skill-search-results.open {
+  display: block;
+}
+
+.skill-result-item {
+  padding: 8px 14px;
+  font-size: 0.8rem;
+  font-family: var(--font-mono);
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.skill-result-item:hover {
+  background: rgba(59, 130, 246, 0.2);
+  color: #fff;
+}
+
+.mounted-skills-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-height: 28px;
+}
+
+.skill-chip-removable {
+  background: rgba(56, 189, 248, 0.12);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  color: var(--accent-cyan);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.skill-chip-removable:hover {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: rgba(239, 68, 68, 0.5);
+  color: #f87171;
+}
+
+.chip-remove-x {
+  font-size: 0.9rem;
+  font-weight: bold;
+}
+
+/* Command Actions Row */
+.command-actions-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-top: 6px;
+}
+
+.btn-icon-flash {
+  font-size: 1.1rem;
+  filter: drop-shadow(0 0 6px #fff);
+}
+
+/* Right Command Terminal Pane */
+.command-terminal-pane {
+  padding: 20px;
+  background: rgba(4, 7, 13, 0.85);
+  border: 1px solid var(--border-accent);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow: 0 0 40px rgba(56, 189, 248, 0.08);
+}
+
+.terminal-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: 12px;
+}
+
+.terminal-dots {
+  display: flex;
+  gap: 6px;
+}
+
+.tdot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+.tdot-red { background: #ef4444; }
+.tdot-yellow { background: #f59e0b; }
+.tdot-green { background: #10b981; }
+
+.terminal-title {
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  color: var(--text-dim);
+}
+
+.terminal-viewport {
+  background: #020306;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius-inner);
+  padding: 16px;
+  height: 220px;
+  overflow-y: auto;
+  font-size: 0.78rem;
+  line-height: 1.6;
+}
+
+.t-line {
+  margin-bottom: 4px;
+  word-break: break-all;
+}
+
+/* Swarm Execution Progress Bar */
+.swarm-progress-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 14px;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: var(--radius-inner);
+  border: 1px solid var(--border-accent);
+}
+
+.progress-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.72rem;
+  color: var(--accent-cyan);
+}
+
+.progress-bar-bg {
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  width: 0%;
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent-primary), var(--accent-cyan));
+  border-radius: var(--radius-pill);
+  box-shadow: 0 0 10px var(--accent-cyan);
+  transition: width 0.3s ease;
+}
+
+/* Directive Output Preview */
+.directive-code-wrap {
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-inner);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.directive-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.68rem;
+  color: var(--text-dim);
+}
+
+.directive-pre {
+  margin: 0;
+  max-height: 160px;
+  overflow-y: auto;
+}
+
+.directive-code {
+  font-size: 0.75rem;
+  color: #93c5fd;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+/* Agent Fleet Enhancements */
+.agents-controls-row {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.agent-card-role {
+  font-size: 0.75rem;
+  color: var(--accent-cyan);
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.agent-specialties {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 10px;
+}
+
+.agent-btn-engage {
+  margin-top: 12px;
+  width: 100%;
+}
+
+/* ==========================================================================
+   MOBILE BOTTOM NAVIGATION DOCK & RESPONSIVE ERGONOMICS (<= 768px)
+   ========================================================================== */
+
+/* Mobile Bottom Dock (Hidden on Desktop, Visible on Mobile) */
+.mobile-bottom-dock {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: calc(64px + env(safe-area-inset-bottom));
+  padding-bottom: env(safe-area-inset-bottom);
+  background: rgba(4, 7, 14, 0.94);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-top: 1px solid var(--border-accent);
+  z-index: 999;
+  justify-content: space-around;
+  align-items: center;
+  box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.7);
+}
+
+.mobile-dock-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  background: transparent;
+  border: none;
+  color: var(--text-dim);
+  font-size: 0.65rem;
+  font-family: var(--font-mono);
+  font-weight: 500;
+  padding: 8px 10px;
+  cursor: pointer;
+  min-width: 54px;
+  min-height: 48px;
+  border-radius: var(--radius-inner);
+  transition: all var(--transition-fast);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mobile-dock-btn svg {
+  transition: transform var(--transition-fast);
+}
+
+.mobile-dock-btn.active {
+  color: var(--accent-cyan);
+  background: rgba(56, 189, 248, 0.1);
+  box-shadow: inset 0 0 12px rgba(56, 189, 248, 0.2);
+}
+
+.mobile-dock-btn.active svg {
+  transform: translateY(-2px);
+  filter: drop-shadow(0 0 8px var(--accent-cyan));
+}
+
+.mobile-dock-btn.highlight-dock-btn {
+  color: #ffffff;
+  position: relative;
+}
+
+.mobile-dock-btn.highlight-dock-btn svg {
+  color: #38bdf8;
+  filter: drop-shadow(0 0 6px #38bdf8);
+}
+
+/* Mobile File Explorer Controls */
+.mobile-explorer-toggle-bar {
+  display: none;
+  margin-bottom: 12px;
+  gap: 8px;
+}
+
+.mobile-explorer-toggle-bar button {
+  flex: 1;
+}
+
+/* Media Queries for Mobile Screens */
+@media (max-width: 768px) {
+  /* Show Mobile Dock and adjust page padding */
+  .mobile-bottom-dock {
+    display: flex;
+  }
+
+  .app-layout {
+    padding-bottom: calc(75px + env(safe-area-inset-bottom)) !important;
+  }
+
+  /* Header adjustments */
+  .header-nav {
+    padding: 10px 14px;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .nav-links {
+    display: none !important;
+  }
+
+  .brand-title {
+    font-size: 0.95rem;
+  }
+
+  .nav-actions {
+    gap: 8px;
+  }
+
+  .nav-actions a span, .nav-actions a[download] span {
+    display: none;
+  }
+
+  .nav-actions a[download] {
+    padding: 8px 10px;
+  }
+
+  /* Hero adjustments */
+  .hero-title {
+    font-size: 1.8rem !important;
+    line-height: 1.25 !important;
+  }
+
+  .hero-subtitle {
+    font-size: 0.88rem !important;
+  }
+
+  /* Telemetry Bar */
+  .telemetry-bar {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px;
+    padding: 14px !important;
+  }
+
+  /* Metrics Grid */
+  .metrics-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px;
+  }
+
+  .metric-card {
+    padding: 16px !important;
+  }
+
+  .metric-value {
+    font-size: 1.7rem !important;
+  }
+
+  /* Command Deck Console */
+  .command-hud-bar {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px;
+    padding: 14px !important;
+  }
+
+  .command-console-grid {
+    grid-template-columns: 1fr !important;
+    gap: 16px;
+  }
+
+  .command-actions-row {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .command-actions-row button {
+    width: 100%;
+  }
+
+  /* File Explorer Mobile View */
+  .mobile-explorer-toggle-bar {
+    display: flex;
+  }
+
+  .file-explorer-container {
+    border-radius: var(--radius-card);
+  }
+
+  .explorer-path-bar {
+    padding: 10px 14px !important;
+    gap: 6px !important;
+  }
+
+  .explorer-main {
+    grid-template-columns: 1fr !important;
+    min-height: 380px !important;
+  }
+
+  .explorer-list-pane {
+    max-height: 360px;
+  }
+
+  .explorer-viewer-pane {
+    min-height: 340px;
+  }
+
+  .viewer-header {
+    padding: 10px 14px !important;
+  }
+
+  .viewer-code-wrap {
+    padding: 12px !important;
+    max-height: 360px !important;
+  }
+
+  .code-display {
+    font-size: 0.74rem !important;
+  }
+
+  /* Knowledge & Cards Grid */
+  .arch-grid, .lang-grid, .vfx-grid, .skills-grid, .agents-grid {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+
+  /* Footer */
+  .app-footer {
+    padding: 16px !important;
+    margin-bottom: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .metrics-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .telemetry-bar {
+    grid-template-columns: 1fr !important;
+  }
+  .command-hud-bar {
+    grid-template-columns: 1fr !important;
+  }
+}

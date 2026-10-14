@@ -68,11 +68,12 @@
       <!-- Tab Navigation -->
       <nav class="nav-links">
         <button class="nav-tab active" data-tab="tab-dashboard">Dashboard</button>
+        <button class="nav-tab highlight-tab" data-tab="tab-command">⚡ Command Deck</button>
         <button class="nav-tab" data-tab="tab-effort">Effort & Tasks (<span id="effort-count-badge">10</span>)</button>
         <button class="nav-tab" data-tab="tab-webdev">Web Dev & Stacks</button>
         <button class="nav-tab" data-tab="tab-files">Live File Explorer 📂</button>
         <button class="nav-tab" data-tab="tab-skills">Skills (496)</button>
-        <button class="nav-tab" data-tab="tab-agents">Agents (71)</button>
+        <button class="nav-tab" data-tab="tab-agents">Agents (73)</button>
       </nav>
 
       <div class="nav-actions">
@@ -236,7 +237,145 @@
       </section>
 
       <!-- =========================================================================
-           TAB 2: EFFORT, TASKS & WORK AUDIT TIMELINE
+           TAB 2: NEURAL COMMAND DECK & AGENT SWARM DISPATCHER (FULL POWER)
+           ========================================================================= -->
+      <section id="tab-command" class="tab-pane">
+        <div class="section-header">
+          <div class="badge badge-accent text-mono">AUTONOMOUS MULTI-AGENT SWARM CORE</div>
+          <h2 class="section-title">Antigravity Neural Command Deck</h2>
+          <p class="section-subtitle">Harness the full power of 73 autonomous agents and 496 specialized skills. Compose directives, trigger test-first workflows, and dispatch swarms.</p>
+        </div>
+
+        <!-- Tactical HUD Bar -->
+        <div class="command-hud-bar glass-panel">
+          <div class="hud-item">
+            <span class="hud-label text-mono">SWARM ENGINE</span>
+            <span class="hud-val text-mono text-positive"><span class="status-live-dot"></span> SYNCHRONIZED</span>
+          </div>
+          <div class="hud-item">
+            <span class="hud-label text-mono">AGENT RUNNERS</span>
+            <span class="hud-val text-mono text-accent">73 Personas Active</span>
+          </div>
+          <div class="hud-item">
+            <span class="hud-label text-mono">SKILL ARSENAL</span>
+            <span class="hud-val text-mono text-cyan">496 Modular Packages</span>
+          </div>
+          <div class="hud-item">
+            <span class="hud-label text-mono">SECURITY GATE</span>
+            <span class="hud-val text-mono text-positive">AgentShield AST Guard</span>
+          </div>
+        </div>
+
+        <!-- Two Column Interactive Command Console -->
+        <div class="command-console-grid">
+          
+          <!-- Left Control Panel: Directive Builder -->
+          <div class="command-controls glass-panel">
+            <div class="panel-header">
+              <span class="text-mono panel-title">DIRECTIVE CONFIGURATION</span>
+              <span class="badge badge-dim text-mono">MISSION DECK</span>
+            </div>
+
+            <!-- Quick Action Mission Presets -->
+            <div class="form-group">
+              <label class="form-label text-mono">MISSION DIRECTIVE PRESETS</label>
+              <div class="preset-chips">
+                <button type="button" class="preset-chip active" data-preset="feature">🚀 Full-Stack Feature Forge</button>
+                <button type="button" class="preset-chip" data-preset="security">🛡️ Zero-Day Security Audit</button>
+                <button type="button" class="preset-chip" data-preset="perf">⚡ Performance & Bundle Tune</button>
+                <button type="button" class="preset-chip" data-preset="mobile">📱 Mobile UX & WCAG Polish</button>
+                <button type="button" class="preset-chip" data-preset="bug">🧪 Test-First Bug Fix</button>
+              </div>
+            </div>
+
+            <!-- Lead Agent Selector -->
+            <div class="form-group">
+              <label class="form-label text-mono" for="cmd-agent-select">SELECT PRIMARY LEAD AGENT (73 AVAILABLE)</label>
+              <select id="cmd-agent-select" class="form-control text-mono">
+                <!-- Dynamically populated with all 73 agents -->
+              </select>
+              <div class="selected-agent-preview glass-card" id="selected-agent-preview">
+                <span class="agent-preview-name text-mono text-accent" id="preview-agent-name">planner</span>
+                <p class="agent-preview-desc" id="preview-agent-desc">Strategic Master Planner for architecture, refactoring, and complex feature workflows.</p>
+              </div>
+            </div>
+
+            <!-- Skill Multi-Selector / Search -->
+            <div class="form-group">
+              <label class="form-label text-mono">MOUNT SKILLS FROM ARSENAL (496 AVAILABLE)</label>
+              <div class="skill-picker-wrap">
+                <input type="text" id="cmd-skill-input" class="form-control" placeholder="Search skills to mount (e.g. backend-patterns, tailwindcss)...">
+                <div class="skill-search-results" id="skill-search-results"></div>
+              </div>
+              <div class="mounted-skills-container" id="mounted-skills-container">
+                <!-- Active skill chips appear here -->
+              </div>
+            </div>
+
+            <!-- Custom Goal / Instructions -->
+            <div class="form-group">
+              <label class="form-label text-mono" for="cmd-goal-input">SPECIFIC OBJECTIVE OR USER DIRECTIVE</label>
+              <textarea id="cmd-goal-input" class="form-control text-mono" rows="3" placeholder="Describe the feature, architecture refactor, or optimization task..."></textarea>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="command-actions-row">
+              <button class="btn btn-primary btn-lg" id="btn-dispatch-swarm">
+                <span class="btn-icon-flash">⚡</span>
+                <span>DISPATCH TO AGENT SWARM</span>
+              </button>
+              <button class="btn btn-glass" id="btn-copy-directive">
+                <span>📋 Copy Directive</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Right Telemetry & Execution Terminal -->
+          <div class="command-terminal-pane glass-panel">
+            <div class="terminal-topbar">
+              <div class="terminal-dots">
+                <span class="tdot tdot-red"></span>
+                <span class="tdot tdot-yellow"></span>
+                <span class="tdot tdot-green"></span>
+              </div>
+              <span class="text-mono terminal-title">ANTIGRAVITY // NEURAL SWARM TERMINAL</span>
+              <span class="badge badge-accent text-mono" id="terminal-status-badge">STANDBY</span>
+            </div>
+
+            <div class="terminal-viewport" id="terminal-viewport">
+              <div class="terminal-output text-mono" id="terminal-output">
+                <p class="t-line text-dim">// Antigravity Multi-Agent Orchestration Core ready.</p>
+                <p class="t-line text-dim">// Select an agent persona and skills on the left to synthesize directives.</p>
+                <p class="t-line text-accent"># System ready: 73 agents connected • 496 skills loaded • GateGuard active.</p>
+              </div>
+            </div>
+
+            <!-- Live Swarm Execution Progress Bar -->
+            <div class="swarm-progress-wrap" id="swarm-progress-wrap" style="display: none;">
+              <div class="progress-meta text-mono">
+                <span id="swarm-stage-label">INITIALIZING SWARM...</span>
+                <span id="swarm-stage-pct">0%</span>
+              </div>
+              <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="swarm-progress-fill"></div>
+              </div>
+            </div>
+
+            <!-- Generated Directive Output Preview -->
+            <div class="directive-code-wrap">
+              <div class="directive-header text-mono">
+                <span>COMPILED ANTIGRAVITY DIRECTIVE</span>
+                <span class="text-dim">READY FOR INVOCATION</span>
+              </div>
+              <pre class="directive-pre"><code class="directive-code text-mono" id="directive-code-display">// Your compiled Antigravity prompt will render here in real time...</code></pre>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- =========================================================================
+           TAB 3: EFFORT, TASKS & WORK AUDIT TIMELINE
            ========================================================================= -->
       <section id="tab-effort" class="tab-pane">
         <div class="section-header">
@@ -290,6 +429,12 @@
         </div>
 
         <div class="file-explorer-container glass-panel">
+          <!-- Mobile Tab Switcher for Files vs Code Viewer -->
+          <div class="mobile-explorer-toggle-bar">
+            <button class="btn btn-sm btn-glass active" id="btn-toggle-explorer-list">📁 File List</button>
+            <button class="btn btn-sm btn-glass" id="btn-toggle-explorer-viewer">📄 Code Viewer</button>
+          </div>
+
           <!-- Breadcrumb & Path Bar -->
           <div class="explorer-path-bar">
             <span class="path-root text-mono">/home/userland/</span>
@@ -308,7 +453,7 @@
 
           <div class="explorer-main">
             <!-- Directory Tree / List -->
-            <div class="explorer-list-pane">
+            <div class="explorer-list-pane" id="explorer-list-pane">
               <div class="explorer-list-header text-mono text-caption">
                 <span>NAME</span>
                 <span>SIZE</span>
@@ -320,9 +465,10 @@
             </div>
 
             <!-- Code Viewer Pane -->
-            <div class="explorer-viewer-pane">
+            <div class="explorer-viewer-pane" id="explorer-viewer-pane">
               <div class="viewer-header">
                 <div class="viewer-meta">
+                  <button class="btn btn-glass btn-sm mobile-back-files" id="btn-mobile-back-files" style="display: none;">&larr; Files</button>
                   <span class="viewer-filename text-mono" id="viewer-filename">Select a file to inspect</span>
                   <span class="badge badge-dim text-mono" id="viewer-filesize">0 KB</span>
                 </div>
@@ -378,13 +524,30 @@
       </section>
 
       <!-- =========================================================================
-           TAB 6: AGENT FLEET
+           TAB 6: AGENT FLEET (73 SPECIALIZED ROLES)
            ========================================================================= -->
       <section id="tab-agents" class="tab-pane">
         <div class="section-header">
-          <div class="badge badge-accent">71 SPECIALIZED ROLES</div>
+          <div class="badge badge-accent">73 SPECIALIZED ROLES</div>
           <h2 class="section-title">Autonomous Agent Fleet</h2>
-          <p class="section-subtitle">Dedicated personas for review, architecture, testing, and language compilation.</p>
+          <p class="section-subtitle">Dedicated personas for architecture, code review, compiler resolution, testing, and security.</p>
+        </div>
+
+        <div class="agents-controls-row">
+          <div class="search-wrap" style="flex: 1; min-width: 260px;">
+            <svg class="search-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input type="text" id="agent-search" class="search-input" placeholder="Search 73 agents by name, role, or specialty...">
+          </div>
+          <div class="category-pills" id="agent-cat-pills">
+            <button class="cat-pill active" data-agent-cat="all">All (73)</button>
+            <button class="cat-pill" data-agent-cat="Architecture">Architecture</button>
+            <button class="cat-pill" data-agent-cat="Code Review">Code Review</button>
+            <button class="cat-pill" data-agent-cat="Security & Compliance">Security</button>
+            <button class="cat-pill" data-agent-cat="DevOps & Build">Build & DevOps</button>
+            <button class="cat-pill" data-agent-cat="Testing & QA">Testing & QA</button>
+            <button class="cat-pill" data-agent-cat="Mobile & UI">Mobile & UI</button>
+            <button class="cat-pill" data-agent-cat="AI & Testing">AI & MLOps</button>
+          </div>
         </div>
 
         <div class="agents-grid" id="agents-grid"></div>
@@ -439,10 +602,38 @@
       <div class="footer-right">
         <div class="telemetry-pill glass-card text-mono">
           <span class="status-live-dot"></span>
-          <span id="footer-telem">496 SKILLS &bull; 71 AGENTS &bull; VAULT UNLOCKED</span>
+          <span id="footer-telem">496 SKILLS &bull; 73 AGENTS &bull; VAULT UNLOCKED</span>
         </div>
       </div>
     </footer>
+
+    <!-- Mobile High-Tech Bottom Navigation Dock (Visible on Mobile <= 768px) -->
+    <nav class="mobile-bottom-dock" aria-label="Mobile Navigation">
+      <button class="mobile-dock-btn active" data-tab="tab-dashboard">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+        <span>Cockpit</span>
+      </button>
+      <button class="mobile-dock-btn highlight-dock-btn" data-tab="tab-command">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+        <span>Command</span>
+      </button>
+      <button class="mobile-dock-btn" data-tab="tab-agents">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="10" rx="2"></rect><circle cx="12" cy="5" r="2"></circle><path d="M12 7v4"></path><line x1="8" y1="16" x2="8" y2="16"></line><line x1="16" y1="16" x2="16" y2="16"></line></svg>
+        <span>73 Agents</span>
+      </button>
+      <button class="mobile-dock-btn" data-tab="tab-skills">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+        <span>496 Skills</span>
+      </button>
+      <button class="mobile-dock-btn" data-tab="tab-files">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+        <span>Files</span>
+      </button>
+      <button class="mobile-dock-btn" data-tab="tab-effort">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+        <span>Tasks</span>
+      </button>
+    </nav>
 
   </div>
 
