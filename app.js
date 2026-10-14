@@ -258,7 +258,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // =========================================================================
-  // 5. Live Telemetry Poller (/api/telemetry)
+  // 5. Live Telemetry Poller (/api/telemetry) with Static Edge Fallback
   // =========================================================================
   function fetchTelemetry() {
     fetch('/api/telemetry')
@@ -270,97 +270,110 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('live-ram-badge').innerText = `RAM: ${t.memory.percentUsed}%`;
         document.getElementById('live-uptime-badge').innerText = `UPTIME: ${t.uptimeFormatted}`;
       })
-      .catch(() => {});
+      .catch(() => {
+        // Static GitHub Pages Edge Fallback
+        document.getElementById('telem-platform').innerText = 'GitHub Pages Edge • Web Client';
+        document.getElementById('telem-node').innerText = 'Static Edge Runtime (V8)';
+        document.getElementById('telem-mem').innerText = 'Browser Sandbox Session';
+        document.getElementById('live-ram-badge').innerText = 'STATUS: ONLINE';
+        const sec = Math.floor(performance.now() / 1000);
+        document.getElementById('live-uptime-badge').innerText = `SESSION: ${Math.floor(sec / 60)}m ${sec % 60}s`;
+      });
   }
   fetchTelemetry();
   setInterval(fetchTelemetry, 6000);
 
   // =========================================================================
-  // 6. Session Effort Timeline (/api/activity)
+  // 6. Session Effort Timeline (/api/activity or static fallback)
   // =========================================================================
+  function renderEfforts(efforts) {
+    const container = document.getElementById('effort-timeline-container');
+    if (!container || !efforts) return;
+    container.innerHTML = '';
+    document.getElementById('effort-count-badge').innerText = efforts.length;
+
+    efforts.forEach(item => {
+      const card = document.createElement('div');
+      card.className = 'effort-card glass-panel';
+      card.innerHTML = `
+        <div class="effort-header">
+          <div class="effort-left">
+            <span class="badge badge-accent text-mono">${item.category}</span>
+            <span class="effort-id text-mono">${item.id}</span>
+          </div>
+          <div class="effort-timestamp text-mono">${item.timestamp} &bull; <span class="text-positive">${item.status}</span></div>
+        </div>
+        <h3 class="effort-title">${item.title}</h3>
+        <p class="effort-detail">${item.detail}</p>
+        <div class="effort-impact text-mono"><strong>IMPACT:</strong> ${item.impact}</div>
+      `;
+      container.appendChild(card);
+    });
+  }
+
   function loadEffortTimeline() {
     fetch('/api/activity')
       .then(r => r.json())
-      .then(efforts => {
-        const container = document.getElementById('effort-timeline-container');
-        if (!container) return;
-        container.innerHTML = '';
-
-        document.getElementById('effort-count-badge').innerText = efforts.length;
-
-        efforts.forEach(item => {
-          const card = document.createElement('div');
-          card.className = 'effort-card glass-panel';
-          card.innerHTML = `
-            <div class="effort-header">
-              <div class="effort-left">
-                <span class="badge badge-accent text-mono">${item.category}</span>
-                <span class="effort-id text-mono">${item.id}</span>
-              </div>
-              <div class="effort-timestamp text-mono">${item.timestamp} &bull; <span class="text-positive">${item.status}</span></div>
-            </div>
-            <h3 class="effort-title">${item.title}</h3>
-            <p class="effort-detail">${item.detail}</p>
-            <div class="effort-impact text-mono"><strong>IMPACT:</strong> ${item.impact}</div>
-          `;
-          container.appendChild(card);
-        });
-      })
-      .catch(() => {});
+      .then(efforts => renderEfforts(efforts))
+      .catch(() => {
+        if (window._staticEfforts) renderEfforts(window._staticEfforts);
+      });
   }
   loadEffortTimeline();
 
   // =========================================================================
-  // 7. Web Dev & Stacks Hub (/api/knowledge)
+  // 7. Web Dev & Stacks Hub (/api/knowledge or static fallback)
   // =========================================================================
+  function renderKnowledge(k) {
+    if (!k) return;
+    const archContainer = document.getElementById('arch-grid-container');
+    if (archContainer && k.architectures) {
+      archContainer.innerHTML = k.architectures.map(a => `
+        <div class="arch-card glass-card">
+          <div>
+            <h4 class="text-mono" style="font-size: 1.05rem; color: #fff;">${a.name}</h4>
+            <p style="font-size: 0.84rem; margin: 8px 0 12px; color: var(--text-secondary);">${a.desc}</p>
+            <div class="text-caption text-dim" style="margin-bottom: 8px;"><strong>BEST FOR:</strong> ${a.bestFor}</div>
+          </div>
+          <div class="arch-tools">
+            ${a.tools.map(t => `<span class="tag">${t}</span>`).join('')}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    const langContainer = document.getElementById('lang-grid-container');
+    if (langContainer && k.languages) {
+      langContainer.innerHTML = k.languages.map(l => `
+        <div class="lang-card glass-card">
+          <div class="lang-header">
+            <h4 class="text-mono" style="color: #fff;">${l.name}</h4>
+            <span class="tag text-accent">${l.skills} Skills</span>
+          </div>
+          <p style="font-size: 0.82rem; color: var(--text-secondary);">${l.role}</p>
+          <div class="text-caption text-dim text-mono">Target: ${l.runtime}</div>
+        </div>
+      `).join('');
+    }
+
+    const vfxContainer = document.getElementById('vfx-grid-container');
+    if (vfxContainer && k.stylingAndVfx) {
+      vfxContainer.innerHTML = k.stylingAndVfx.map(v => `
+        <div class="vfx-card glass-card">
+          <h4 class="text-mono" style="color: var(--accent-cyan);">${v.name}</h4>
+          <p style="font-size: 0.84rem; color: var(--text-secondary);">${v.purpose}</p>
+        </div>
+      `).join('');
+    }
+  }
+
   function loadKnowledgeHub() {
     fetch('/api/knowledge')
       .then(r => r.json())
-      .then(k => {
-        // Architectures
-        const archContainer = document.getElementById('arch-grid-container');
-        if (archContainer && k.architectures) {
-          archContainer.innerHTML = k.architectures.map(a => `
-            <div class="arch-card glass-card">
-              <div>
-                <h4 class="text-mono" style="font-size: 1.05rem; color: #fff;">${a.name}</h4>
-                <p style="font-size: 0.84rem; margin: 8px 0 12px; color: var(--text-secondary);">${a.desc}</p>
-                <div class="text-caption text-dim" style="margin-bottom: 8px;"><strong>BEST FOR:</strong> ${a.bestFor}</div>
-              </div>
-              <div class="arch-tools">
-                ${a.tools.map(t => `<span class="tag">${t}</span>`).join('')}
-              </div>
-            </div>
-          `).join('');
-        }
-
-        // Languages
-        const langContainer = document.getElementById('lang-grid-container');
-        if (langContainer && k.languages) {
-          langContainer.innerHTML = k.languages.map(l => `
-            <div class="lang-card glass-card">
-              <div class="lang-header">
-                <h4 class="text-mono" style="color: #fff;">${l.name}</h4>
-                <span class="tag text-accent">${l.skills} Skills</span>
-              </div>
-              <p style="font-size: 0.82rem; color: var(--text-secondary);">${l.role}</p>
-              <div class="text-caption text-dim text-mono">Target: ${l.runtime}</div>
-            </div>
-          `).join('');
-        }
-
-        // VFX & Creative
-        const vfxContainer = document.getElementById('vfx-grid-container');
-        if (vfxContainer && k.stylingAndVfx) {
-          vfxContainer.innerHTML = k.stylingAndVfx.map(v => `
-            <div class="vfx-card glass-card">
-              <h4 class="text-mono" style="color: var(--accent-cyan);">${v.name}</h4>
-              <p style="font-size: 0.84rem; color: var(--text-secondary);">${v.purpose}</p>
-            </div>
-          `).join('');
-        }
-      })
-      .catch(() => {});
+      .then(k => renderKnowledge(k))
+      .catch(() => {
+        if (window._staticKnowledge) renderKnowledge(window._staticKnowledge);
+      });
   }
   loadKnowledgeHub();
 
@@ -399,68 +412,85 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  const STATIC_REPO_FILES = [
+    { name: 'index.html', path: 'index.html', isDirectory: false, extension: '.html', size: 22019 },
+    { name: 'style.css', path: 'style.css', isDirectory: false, extension: '.css', size: 30123 },
+    { name: 'app.js', path: 'app.js', isDirectory: false, extension: '.js', size: 24013 },
+    { name: 'server.js', path: 'server.js', isDirectory: false, extension: '.js', size: 16192 },
+    { name: 'data.json', path: 'data.json', isDirectory: false, extension: '.json', size: 236400 },
+    { name: 'package.json', path: 'package.json', isDirectory: false, extension: '.json', size: 504 },
+    { name: 'README.md', path: 'README.md', isDirectory: false, extension: '.md', size: 3402 }
+  ];
+
+  function renderFileList(items, currentDir) {
+    currentExplorerDir = currentDir;
+    explorerCurrentPath.innerText = currentDir === '.' ? '/' : `/${currentDir}`;
+    btnUpDir.disabled = currentDir === '.';
+    explorerItemsList.innerHTML = '';
+    items.forEach(item => {
+      const row = document.createElement('div');
+      row.className = 'explorer-item';
+      row.innerHTML = `
+        <div class="item-left">
+          <span class="item-icon">${getFileIcon(item)}</span>
+          <span>${item.name}</span>
+        </div>
+        <span class="item-size">${item.isDirectory ? 'dir' : formatBytes(item.size)}</span>
+      `;
+      row.addEventListener('click', () => {
+        playUiClick();
+        if (item.isDirectory) {
+          loadFileExplorer(item.path);
+        } else {
+          document.querySelectorAll('.explorer-item').forEach(el => el.classList.remove('active'));
+          row.classList.add('active');
+          viewOnlineFile(item.path);
+        }
+      });
+      explorerItemsList.appendChild(row);
+    });
+  }
+
   function loadFileExplorer(dirPath = '.') {
     fetch(`/api/files?dir=${encodeURIComponent(dirPath)}`)
       .then(r => r.json())
       .then(data => {
-        if (data.error) {
-          explorerItemsList.innerHTML = `<div class="text-dim" style="padding: 20px;">${data.error}</div>`;
-          return;
-        }
-
-        currentExplorerDir = data.currentDir;
-        explorerCurrentPath.innerText = data.currentDir === '.' ? '/' : `/${data.currentDir}`;
-
-        btnUpDir.disabled = data.currentDir === '.';
-
-        explorerItemsList.innerHTML = '';
-        data.items.forEach(item => {
-          const row = document.createElement('div');
-          row.className = 'explorer-item';
-          row.innerHTML = `
-            <div class="item-left">
-              <span class="item-icon">${getFileIcon(item)}</span>
-              <span>${item.name}</span>
-            </div>
-            <span class="item-size">${item.isDirectory ? 'dir' : formatBytes(item.size)}</span>
-          `;
-
-          row.addEventListener('click', () => {
-            playUiClick();
-            if (item.isDirectory) {
-              loadFileExplorer(item.path);
-            } else {
-              document.querySelectorAll('.explorer-item').forEach(el => el.classList.remove('active'));
-              row.classList.add('active');
-              viewOnlineFile(item.path);
-            }
-          });
-
-          explorerItemsList.appendChild(row);
-        });
+        if (data.error) throw new Error(data.error);
+        renderFileList(data.items, data.currentDir);
       })
       .catch(() => {
-        explorerItemsList.innerHTML = `<div class="text-dim" style="padding: 20px;">Could not connect to workspace file API.</div>`;
+        // Fallback for GitHub Pages static hosting
+        renderFileList(STATIC_REPO_FILES, '.');
       });
   }
 
   function viewOnlineFile(filePath) {
     viewerFilename.innerText = `Loading ${filePath}...`;
-    viewerCodeContent.innerText = '// Fetching file content from server...';
+    viewerCodeContent.innerText = '// Fetching file content...';
 
     fetch(`/api/read?file=${encodeURIComponent(filePath)}`)
       .then(r => r.json())
       .then(res => {
-        if (res.error) {
-          viewerCodeContent.innerText = `// Error: ${res.error}`;
-          return;
-        }
+        if (res.error) throw new Error(res.error);
         viewerFilename.innerText = res.filename;
         viewerFilesize.innerText = `${formatBytes(res.size)}`;
         viewerCodeContent.innerText = res.content;
       })
       .catch(() => {
-        viewerCodeContent.innerText = '// Error: Could not read file content.';
+        // Fallback: direct HTTP fetch for GitHub Pages
+        fetch(filePath)
+          .then(r => {
+            if (!r.ok) throw new Error(`HTTP ${r.status}`);
+            return r.text();
+          })
+          .then(text => {
+            viewerFilename.innerText = filePath;
+            viewerFilesize.innerText = formatBytes(new Blob([text]).size);
+            viewerCodeContent.innerText = text;
+          })
+          .catch(err => {
+            viewerCodeContent.innerText = `// Could not read file content: ${err.message}`;
+          });
       });
   }
 
@@ -490,6 +520,15 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Handle direct download button for GitHub Pages
+  if (window.location.hostname.includes('github.io')) {
+    document.querySelectorAll('a[download]').forEach(a => {
+      a.href = 'https://github.com/aman35-ai/antigravity-cockpit/archive/refs/heads/main.zip';
+      a.removeAttribute('download');
+      a.target = '_blank';
+    });
+  }
+
   // =========================================================================
   // 9. Load Static Skill & Agent Manifest (data.json)
   // =========================================================================
@@ -498,6 +537,18 @@ document.addEventListener('DOMContentLoaded', () => {
     .then(data => {
       skillsData = data.skills || [];
       agentsData = data.agents || [];
+      window._staticEfforts = data.efforts || [];
+      window._staticKnowledge = data.knowledge || {};
+
+      // If containers are empty from static mode, fill them
+      const effortContainer = document.getElementById('effort-timeline-container');
+      if (effortContainer && (!effortContainer.children || effortContainer.children.length === 0)) {
+        renderEfforts(window._staticEfforts);
+      }
+      const archContainer = document.getElementById('arch-grid-container');
+      if (archContainer && (!archContainer.children || archContainer.children.length === 0)) {
+        renderKnowledge(window._staticKnowledge);
+      }
 
       document.getElementById('kpi-skills').innerText = data.stats.skillsCount || 482;
       document.getElementById('kpi-agents').innerText = data.stats.agentsCount || 71;
