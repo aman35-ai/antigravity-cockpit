@@ -169,7 +169,8 @@ const MIME_TYPES = {
   '.yml': 'text/plain; charset=utf-8',
   '.sh': 'text/plain; charset=utf-8',
   '.ts': 'text/plain; charset=utf-8',
-  '.py': 'text/plain; charset=utf-8'
+  '.py': 'text/plain; charset=utf-8',
+  '.zip': 'application/zip'
 };
 
 // Safe path validation: strictly within WORKSPACE_ROOT
@@ -346,6 +347,24 @@ const server = http.createServer((req, res) => {
       res.writeHead(500, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ error: err.message }));
     }
+    return;
+  }
+
+  // API 6: Direct Download of Project ZIP Archive
+  if (pathname === '/api/download-zip' || pathname === '/download') {
+    const zipPath = path.join(APP_DIR, 'antigravity-cockpit-project.zip');
+    if (!fs.existsSync(zipPath)) {
+      res.writeHead(404, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Zip file not ready yet' }));
+      return;
+    }
+    const stat = fs.statSync(zipPath);
+    res.writeHead(200, {
+      'Content-Type': 'application/zip',
+      'Content-Disposition': 'attachment; filename="demo-antigravity-project.zip"',
+      'Content-Length': stat.size
+    });
+    fs.createReadStream(zipPath).pipe(res);
     return;
   }
 
